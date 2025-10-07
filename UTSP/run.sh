@@ -1,1 +1,1 @@
-./bin/runner /path/to/config.json
+./bin/runner /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/config.json

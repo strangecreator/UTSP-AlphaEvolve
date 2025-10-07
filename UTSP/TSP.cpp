@@ -18,8 +18,11 @@ using namespace std::chrono;
 #include "include/local_2_opt_search.hpp"
 #include "include/local_k_opt_search.hpp"
 
+// additional functions & methods
+#include "include/additional.hpp"
 
-// * config parameters *
+
+// --- config parameters ---
 //   `cities_number`: number of points on the 2D surface.
 //   `input_path`: path to the file with cities coordinates and the edge heat map.
 //   `output_path`: path to the file where to write the optimal hamiltonian cycle and corresponding metrics.
@@ -100,8 +103,8 @@ void solve(const Config& config, Context& context) {  // the found solution will
 
     int max_k_opt_depth = config.max_k_opt_depth;
 
-	for (int i = 1; i < config.restarts_number + 1; ++i) {
-        std::cout << "# --------- Iteration: " << i << '\n';
+	for (int i = 1; i < config.restarts_number + 1; ++i) {  // maybe add some stopping criteria (with BHH 2D constant for example)
+        if (i % 100 == 0) { std::cout << "# --------- Iteration: " << i << '\n'; }
         int improved_times = 0;
 
         // random solution
@@ -114,7 +117,7 @@ void solve(const Config& config, Context& context) {  // the found solution will
         if (config.distance_type != DistanceType::Double) {
             context.path_distance_double = calc_total_distance_double(config, context);
         }
-        std::cout << std::setprecision(8) << "Phase #1 (random cycle). Total distance: " << context.path_distance_double << ", Time: " << duration_cast<milliseconds>(end_time - start_time).count() << " ms\n";
+        if (i % 100 == 0) { std::cout << std::setprecision(8) << "Phase #1 (random cycle). Total distance: " << context.path_distance_double << ", Time: " << duration_cast<milliseconds>(end_time - start_time).count() << " ms\n"; }
 
         // local 2opt search
         start_time = high_resolution_clock::now();
@@ -124,7 +127,7 @@ void solve(const Config& config, Context& context) {  // the found solution will
         if (config.distance_type != DistanceType::Double) {
             context.path_distance_double = calc_total_distance_double(config, context);
         }
-        std::cout << std::setprecision(8) << "Phase #2 (local 2'opt search). Total distance: " << context.path_distance_double << ", Improved times: " << improved_times << ", Time: " << duration_cast<milliseconds>(end_time - start_time).count() << " ms\n";
+        if (i % 100 == 0) { std::cout << std::setprecision(8) << "Phase #2 (local 2'opt search). Total distance: " << context.path_distance_double << ", Improved times: " << improved_times << ", Time: " << duration_cast<milliseconds>(end_time - start_time).count() << " ms\n"; }
 
         // local k opt search
         start_time = high_resolution_clock::now();
@@ -134,7 +137,7 @@ void solve(const Config& config, Context& context) {  // the found solution will
         if (config.distance_type != DistanceType::Double) {
             context.path_distance_double = calc_total_distance_double(config, context);
         }
-        std::cout << std::setprecision(8) << "Phase #3 (local k'opt search). Total distance: " << context.path_distance_double << ", Improved times: " << improved_times << ", Time: " << duration_cast<milliseconds>(end_time - start_time).count() << " ms\n";
+        if (i % 100 == 0) { std::cout << std::setprecision(8) << "Phase #3 (local k'opt search). Total distance: " << context.path_distance_double << ", Improved times: " << improved_times << ", Time: " << duration_cast<milliseconds>(end_time - start_time).count() << " ms\n"; }
 
         // changing the best path
         if (
@@ -150,7 +153,7 @@ void solve(const Config& config, Context& context) {  // the found solution will
             max_k_opt_depth = std::min(10 + (rand() % 80), config.cities_number / 2);
         }
 
-        std::cout << '\n';
+        if (i % 100 == 0) { std::cout << '\n'; }
 	}
 
     // final convertation (context.best_path to context.solution)
@@ -174,6 +177,8 @@ int main(int argc, char** argv) {
     json config_raw; config_file >> config_raw;
     Config config(config_raw);
 
+    std::cout << "Number of cities: " << config.cities_number << "\n\n";
+
     // initialization & memory allocation
     Context context(config);
 
@@ -186,9 +191,12 @@ int main(int argc, char** argv) {
     solve(config, context);
 
     // printing the solution
+    std::ofstream output_file(config.output_path);
+
     std::cout << "Final solution:\n";
     for (int i = 0; i < config.cities_number; ++i) {
         std::cout << context.solution[i] << ' ';
+        output_file << context.solution[i] << ' ';
     }
     std::cout << "\n\nFinal solution score: " << calc_total_distance_double(config, context) << '\n';
 

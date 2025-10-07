@@ -1,0 +1,1 @@
+g++ -std=gnu++17 -O3 -DNDEBUG -march=native -funroll-loops -ffast-math -Iinclude TSP.cpp -o bin/runner -lpthread -lm -ldl

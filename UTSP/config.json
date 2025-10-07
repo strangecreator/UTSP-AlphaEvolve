@@ -1,7 +1,8 @@
 {
-    "cities_number": 200,
+    "cities_number": 128,
     "input_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/sample_input.txt",
-    "use_heat_map_as_initial_weights": false,
+    "output_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/sample_output.txt",
+    "use_heat_map_as_initial_weights": true,
     "candidates_source": "knn",
     "candidates_number": 10,
     "max_k_opt_depth": 89,

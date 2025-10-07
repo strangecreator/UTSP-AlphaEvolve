@@ -22,6 +22,7 @@ enum class DistanceType { Int32, Int64, Double };
 struct Config {
     int cities_number;
     std::string input_path;
+    std::string output_path;
     bool use_heat_map_as_initial_weights;
     CandidatesSource candidates_source;
     int candidates_number;
@@ -39,6 +40,7 @@ struct Config {
     Config(const json& config) {
         cities_number = config["cities_number"];
         input_path = config["input_path"];
+        output_path = config["output_path"];
         use_heat_map_as_initial_weights = config["use_heat_map_as_initial_weights"];
 
         if (config["candidates_source"].get<std::string>() == "knn") {
