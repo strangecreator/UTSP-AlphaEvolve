@@ -35,7 +35,7 @@ def parse_output_files(output_files_paths: list[str]) -> np.ndarray:
     results = []
 
     for output_file_path in output_files_paths:
-        with open(output_file_path, 'w') as file:
+        with open(output_file_path, 'r') as file:
             results.append( np.array(list(map(int, file.read().strip().split()))) )
     
     return results
@@ -56,11 +56,10 @@ def run(
 
     input_paths = [f"{dir_path}/input_files/instance_{i:05d}.txt" for i in range(cities.shape[0])]
     output_paths = [f"{dir_path}/output_files/instance_{i:05d}.txt" for i in range(cities.shape[0])]
-    config_paths = [f"{dir_path}/config_files/instance_{i:05d}.txt" for i in range(cities.shape[0])]
+    config_paths = [f"{dir_path}/config_files/instance_{i:05d}.json" for i in range(cities.shape[0])]
 
     # train
-    heat_map_train_io = {"stdin": None, "stdout": None, "stderr": None}
-    heat_map_train_data = run_python_heat_map_train(f"{dir_path}/heat_map_train.py", heat_map_train_io, timeout=heat_map_train_timeout)
+    heat_map_train_data = run_python_heat_map_train(f"{dir_path}/heat_map_train.py", timeout=heat_map_train_timeout)
     if verbose: print("Heat map train complete.")
 
     # inference
@@ -73,12 +72,12 @@ def run(
 
     # building input files
     for i in range(cities.shape[0]):
-        format_input_file(input_paths[i], cities[i], np.load(heat_map_inference_results[i][1]))
+        format_input_file(input_paths[i], cities[i], np.load(heat_map_inference_results["heat_map_paths"][i]))
     if verbose: print("Building input files complete.")
 
     # config changing
     for i in range(cities.shape[0]):
-        change_config_file(f"{dir_path}/config.json", config_paths[i], cities.shape[0], input_paths[i], output_paths[i])
+        change_config_file(f"{dir_path}/config.json", config_paths[i], cities.shape[1], input_paths[i], output_paths[i])
     if verbose: print("Building config files complete.")
 
     # running compiled binary
@@ -101,8 +100,6 @@ if __name__ == "__main__":
     result = run(
         str(BASE_DIR / "UTSP"),
         load_points(200, "test"),
-        "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/sample_input.txt",
-        "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/sample_output.txt",
         heat_map_train_timeout=360.0,
         heat_map_inference_timeout=60.0,
         tsp_compilation_timeout=10.0,
@@ -110,4 +107,4 @@ if __name__ == "__main__":
         verbose=True,
     )
 
-    print(result)
+    print({key: value for key, value in result.items() if key != "solutions"})

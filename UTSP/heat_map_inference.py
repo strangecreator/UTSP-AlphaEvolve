@@ -32,6 +32,7 @@ if __name__ == "__main__":
 
     # calculating heat map
     heat_map = calc_heat_map(cities).astype(np.float32, copy=False)
+    print("Sample output to log")
 
     # writing heat map atomically to out .npy file (mind the output format if you want to change this part, as your solution will be tested in an environment)
     tmp_path = args.out + ".tmp"

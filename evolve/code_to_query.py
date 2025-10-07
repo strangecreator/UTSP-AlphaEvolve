@@ -11,54 +11,54 @@ from utils import *
 # TODO: add parsing errors to the query
 TEMPLATE = """
 * heat_map_train.py *:
-```
+@@@
 {heat_map_train_py_code}
-```
+@@@
 
 * heat_map_inference.py *:
-```
+@@@
 {heat_map_inference_py_code}
-```
+@@@
 
 * include/utils.hpp *:
-```
+@@@
 {utils_hpp_code}
-```
+@@@
 
 * include/context.hpp *:
-```
+@@@
 {context_hpp_code}
-```
+@@@
 
 * include/random_solution.hpp *:
-```
+@@@
 {random_solution_hpp_code}
-```
+@@@
 
 * include/local_2_opt_search.hpp *:
-```
+@@@
 {local_2_opt_search_hpp_code}
-```
+@@@
 
 * include/local_k_opt_search.hpp *:
-```
+@@@
 {local_k_opt_search_hpp_code}
-```
+@@@
 
 * include/additional.hpp *:
-```
+@@@
 {additional_hpp_code}
-```
+@@@
 
 * TSP.cpp *:
-```
+@@@
 {TSP_cpp_code}
-```
+@@@
 
 * config.json *:
-```
+@@@
 {config_json_code}
-```
+@@@
 """.strip()
 
 DEFAULT_PARSE_ERROR = "Could not parse code (maybe not present). If you have provided a new code for this file then, check on correct formatting and filenames! You can write only in those 10 files. (\"heat_map_train.py\", \"heat_map_inference.py\", \"config.json\", \"TSP.cpp\", and 6 .hpp's in the include/ folder)"
@@ -100,13 +100,13 @@ def parse_output_code(text: str) -> None:
 
         block_code = text_splitted[1].strip()
 
-        if not block_code.startswith("```\n"): return None
+        if not block_code.startswith("@@@\n"): return None
         
-        block_code = block_code.removeprefix("```\n").strip()
+        block_code = block_code.removeprefix("@@@\n").strip()
 
-        if "\n```" not in block_code: return None
+        if "\n@@@" not in block_code: return None
 
-        return block_code.split("\n```", maxsplit=1)[0].strip()
+        return block_code.split("\n@@@", maxsplit=1)[0].strip()
 
 
     return {
