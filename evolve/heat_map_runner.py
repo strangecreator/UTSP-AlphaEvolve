@@ -246,8 +246,8 @@ def run_heat_maps_parallel(
     return {
         "heat_map_paths": out_paths,
         "time_elapsed": ordered_times,
-        "instance_stdout": instance_stdout,
-        "instance_stderr": instance_stderr,
+        "instance_stdout": instance_stdout.decode(),
+        "instance_stderr": instance_stderr.decode(),
     }
 
 

@@ -66,9 +66,20 @@ class LLMEnsemble:
 
     def _sample_model(self) -> LLMInterface:
         """Sample a model from the ensemble based on weights"""
-        index = self.random_state.choices(range(len(self.models)), weights=self.weights, k=1)[0]
+        manual_indices = [i for i, m in enumerate(self.models) if getattr(m, "manual_mode", False)]
+
+        if manual_indices:
+            # re-normalize weights among the manual subset (keep relative proportions)
+            sub_weights = [self.weights[i] for i in manual_indices]
+            total = sum(sub_weights) or 1.0
+            sub_weights = [w / total for w in sub_weights]
+            index = self.random_state.choices(manual_indices, weights=sub_weights, k=1)[0]
+        else:
+            index = self.random_state.choices(range(len(self.models)), weights=self.weights, k=1)[0]
+        
         sampled_model = self.models[index]
-        logger.info(f"Sampled model: {vars(sampled_model)['model']}")
+        # logger.info(f"Sampled model: {vars(sampled_model)['model']}")
+        logger.info(f"Sampled model: {getattr(sampled_model, 'model', '<unknown>')}")
         return sampled_model
 
     async def generate_multiple(self, prompt: str, n: int, **kwargs) -> List[str]:

@@ -6,6 +6,13 @@ import re
 from typing import Dict, List, Optional, Tuple, Union
 
 
+def _normalize_newlines(text: str) -> str:
+    """
+    Convert CRLF/CR to LF. Do not strip any other whitespace.
+    """
+    return text.replace("\r\n", "\n").replace("\r", "\n")
+
+
 def parse_evolve_blocks(code: str) -> List[Tuple[int, int, str]]:
     """
     Parse evolve blocks from code
@@ -16,12 +23,13 @@ def parse_evolve_blocks(code: str) -> List[Tuple[int, int, str]]:
     Returns:
         List of tuples (start_line, end_line, block_content)
     """
+    code = _normalize_newlines(code)
     lines = code.split("\n")
-    blocks = []
+    blocks: List[Tuple[int, int, str]] = []
 
     in_block = False
     start_line = -1
-    block_content = []
+    block_content: List[str] = []
 
     for i, line in enumerate(lines):
         if "# EVOLVE-BLOCK-START" in line:
@@ -37,52 +45,129 @@ def parse_evolve_blocks(code: str) -> List[Tuple[int, int, str]]:
     return blocks
 
 
+def extract_diffs(diff_text: str) -> List[Tuple[str, str]]:
+    """
+    Extract diff blocks from the diff text, tolerant to CRLF and extra spaces.
+
+    Format:
+        <<<<<<< SEARCH
+        ...search...
+        =======
+        ...replace...
+        >>>>>>> REPLACE
+    """
+    diff_text = _normalize_newlines(diff_text)
+
+    # Allow optional spaces after markers and tolerate CRLF already normalized.
+    # The replace section may or may not end with a newline before the >>>>>>> line.
+    pattern = re.compile(
+        r"""
+        <<<<<<<\s*SEARCH[ \t]*\n     # start marker
+        (.*?)                        # search block (non-greedy)
+        \n=======[ \t]*\n            # separator
+        (.*?)                        # replace block (non-greedy)
+        \n>>>>>>>[ \t]*REPLACE       # end marker
+        """,
+        re.DOTALL | re.VERBOSE,
+    )
+
+    blocks = pattern.findall(diff_text)
+
+    # Do not strip inner whitespace; only strip a single leading/trailing newline
+    # caused by the regex boundaries so substring matches remain faithful.
+    res: List[Tuple[str, str]] = []
+    for search, replace in blocks:
+        # Normalize only the outermost newlines introduced by the pattern
+        if search.startswith("\n"):
+            search = search[1:]
+        if replace.startswith("\n"):
+            replace = replace[1:]
+        res.append((search, replace))
+    return res
+
+
+def _lines_equal_strict(a: List[str], b: List[str]) -> bool:
+    return a == b
+
+
+def _lines_equal_rstrip(a: List[str], b: List[str]) -> bool:
+    return [x.rstrip() for x in a] == [x.rstrip() for x in b]
+
+
+def _norm_ws(s: str) -> str:
+    # Collapse runs of spaces/tabs, preserve other chars
+    return re.sub(r"[ \t]+", " ", s.rstrip())
+
+
+def _lines_equal_ws_norm(a: List[str], b: List[str]) -> bool:
+    return [_norm_ws(x) for x in a] == [_norm_ws(y) for y in b]
+
+
 def apply_diff(original_code: str, diff_text: str) -> str:
     """
-    Apply a diff to the original code
+    Apply SEARCH/REPLACE diff blocks to the original code.
+    Robust to CRLF vs LF and minor whitespace differences.
 
-    Args:
-        original_code: Original source code
-        diff_text: Diff in the SEARCH/REPLACE format
-
-    Returns:
-        Modified code
+    Strategy per block:
+      1) strict match
+      2) trailing-space-insensitive match
+      3) whitespace-normalized match (space/tab runs collapsed)
     """
-    # Split into lines for easier processing
-    original_lines = original_code.split("\n")
-    result_lines = original_lines.copy()
+    original_code = _normalize_newlines(original_code)
+    result_lines = original_code.split("\n")
 
-    # Extract diff blocks
     diff_blocks = extract_diffs(diff_text)
+    if not diff_blocks:
+        raise ValueError(
+            "No diff blocks found. Ensure your diff is formatted as:\n"
+            "<<<<<<< SEARCH\\n...\\n=======\\n...\\n>>>>>>> REPLACE"
+        )
 
-    # Apply each diff block
-    for search_text, replace_text in diff_blocks:
+    for idx, (search_text, replace_text) in enumerate(diff_blocks, 1):
+        search_text = _normalize_newlines(search_text)
+        replace_text = _normalize_newlines(replace_text)
+
         search_lines = search_text.split("\n")
         replace_lines = replace_text.split("\n")
 
-        # Find where the search pattern starts in the original code
-        for i in range(len(result_lines) - len(search_lines) + 1):
-            if result_lines[i : i + len(search_lines)] == search_lines:
-                # Replace the matched section
-                result_lines[i : i + len(search_lines)] = replace_lines
+        m = len(search_lines)
+        if m == 0:
+            raise ValueError(f"Empty SEARCH block in diff #{idx}.")
+
+        found_at: Optional[int] = None
+
+        # Pass 1: strict equality
+        for i in range(len(result_lines) - m + 1):
+            if _lines_equal_strict(result_lines[i : i + m], search_lines):
+                found_at = i
                 break
 
+        # Pass 2: trailing-space-insensitive
+        if found_at is None:
+            for i in range(len(result_lines) - m + 1):
+                if _lines_equal_rstrip(result_lines[i : i + m], search_lines):
+                    found_at = i
+                    break
+
+        # Pass 3: whitespace-normalized (collapse runs of spaces/tabs)
+        if found_at is None:
+            for i in range(len(result_lines) - m + 1):
+                if _lines_equal_ws_norm(result_lines[i : i + m], search_lines):
+                    found_at = i
+                    break
+
+        if found_at is None:
+            preview = search_lines[0] if search_lines else "<empty>"
+            raise ValueError(
+                f"SEARCH block #{idx} not found in target source.\n"
+                f"First SEARCH line: {preview!r}\n"
+                "Hint: check for small whitespace differences or CRLF/LF issues."
+            )
+
+        # Replace
+        result_lines[found_at : found_at + m] = replace_lines
+
     return "\n".join(result_lines)
-
-
-def extract_diffs(diff_text: str) -> List[Tuple[str, str]]:
-    """
-    Extract diff blocks from the diff text
-
-    Args:
-        diff_text: Diff in the SEARCH/REPLACE format
-
-    Returns:
-        List of tuples (search_text, replace_text)
-    """
-    diff_pattern = r"<<<<<<< SEARCH\n(.*?)=======\n(.*?)>>>>>>> REPLACE"
-    diff_blocks = re.findall(diff_pattern, diff_text, re.DOTALL)
-    return [(match[0].rstrip(), match[1].rstrip()) for match in diff_blocks]
 
 
 def parse_full_rewrite(llm_response: str, language: str = "python") -> Optional[str]:
@@ -96,14 +181,17 @@ def parse_full_rewrite(llm_response: str, language: str = "python") -> Optional[
     Returns:
         Extracted code or None if not found
     """
-    code_block_pattern = r"```" + language + r"\n(.*?)```"
+    llm_response = _normalize_newlines(llm_response)
+
+    # Try exact language first
+    code_block_pattern = r"```" + re.escape(language) + r"\n(.*?)```"
     matches = re.findall(code_block_pattern, llm_response, re.DOTALL)
 
     if matches:
         return matches[0].strip()
 
-    # Fallback to any code block
-    code_block_pattern = r"```(.*?)```"
+    # Fallback to any fenced block
+    code_block_pattern = r"```(?:[\w.+-]+)?\n(.*?)```"
     matches = re.findall(code_block_pattern, llm_response, re.DOTALL)
 
     if matches:
@@ -123,13 +211,12 @@ def format_diff_summary(diff_blocks: List[Tuple[str, str]]) -> str:
     Returns:
         Summary string
     """
-    summary = []
+    summary: List[str] = []
 
     for i, (search_text, replace_text) in enumerate(diff_blocks):
         search_lines = search_text.strip().split("\n")
         replace_lines = replace_text.strip().split("\n")
 
-        # Create a short summary
         if len(search_lines) == 1 and len(replace_lines) == 1:
             summary.append(f"Change {i+1}: '{search_lines[0]}' to '{replace_lines[0]}'")
         else:
@@ -155,10 +242,12 @@ def calculate_edit_distance(code1: str, code2: str) -> int:
     Returns:
         Edit distance (number of operations needed to transform code1 into code2)
     """
+    code1 = _normalize_newlines(code1)
+    code2 = _normalize_newlines(code2)
+
     if code1 == code2:
         return 0
 
-    # Simple implementation of Levenshtein distance
     m, n = len(code1), len(code2)
     dp = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
 
@@ -172,9 +261,9 @@ def calculate_edit_distance(code1: str, code2: str) -> int:
         for j in range(1, n + 1):
             cost = 0 if code1[i - 1] == code2[j - 1] else 1
             dp[i][j] = min(
-                dp[i - 1][j] + 1,  # deletion
-                dp[i][j - 1] + 1,  # insertion
-                dp[i - 1][j - 1] + cost,  # substitution
+                dp[i - 1][j] + 1,          # deletion
+                dp[i][j - 1] + 1,          # insertion
+                dp[i - 1][j - 1] + cost,   # substitution
             )
 
     return dp[m][n]
@@ -190,6 +279,8 @@ def extract_code_language(code: str) -> str:
     Returns:
         Detected language or "unknown"
     """
+    code = _normalize_newlines(code)
+
     # Look for common language signatures
     if re.search(r"^(import|from|def|class)\s", code, re.MULTILINE):
         return "python"

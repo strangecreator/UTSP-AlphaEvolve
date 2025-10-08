@@ -1,0 +1,206 @@
+2025-10-08 21:27:17,262 - openevolve.controller - INFO - Logging to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/logs/openevolve_20251008_212717.log
+2025-10-08 21:27:17,267 - openevolve.controller - INFO - Set random seed to 42 for reproducibility
+2025-10-08 21:27:17,267 - openevolve.controller - DEBUG - Generated LLM seed: 191216760
+2025-10-08 21:27:17,267 - openevolve.llm.openai - INFO - Manual mode is ON. Queue dir: /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/temp/manual_queue
+2025-10-08 21:27:17,267 - openevolve.llm.openai - INFO - Initialized OpenAI LLM with model: gpt-5
+2025-10-08 21:27:17,267 - openevolve.llm.ensemble - DEBUG - LLMEnsemble: Set random seed to 191216760 for deterministic model selection
+2025-10-08 21:27:17,267 - openevolve.llm.ensemble - INFO - Initialized LLM ensemble with models: gpt-5 (weight: 1.00)
+2025-10-08 21:27:17,268 - openevolve.llm.openai - INFO - Manual mode is ON. Queue dir: /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/temp/manual_queue
+2025-10-08 21:27:17,268 - openevolve.llm.ensemble - DEBUG - LLMEnsemble: Set random seed to 191216760 for deterministic model selection
+2025-10-08 21:27:17,268 - openevolve.prompt.sampler - INFO - Initialized prompt sampler
+2025-10-08 21:27:17,269 - openevolve.prompt.sampler - INFO - Set custom templates: system=evaluator_system_message, user=None
+2025-10-08 21:27:17,269 - openevolve.database - DEBUG - Database: Set random seed to 42
+2025-10-08 21:27:17,269 - openevolve.database - INFO - Initialized program database with 0 programs
+2025-10-08 21:27:17,273 - openevolve.evaluator - INFO - Successfully loaded evaluation function from /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/evaluator.py
+2025-10-08 21:27:17,273 - openevolve.evaluator - INFO - Initialized evaluator with /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/evaluator.py
+2025-10-08 21:27:17,273 - openevolve.controller - INFO - Initialized OpenEvolve with /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/initial_program.txt
+2025-10-08 21:27:17,273 - asyncio - DEBUG - Using selector: KqueueSelector
+2025-10-08 21:27:17,274 - openevolve.controller - INFO - Adding initial program to database
+2025-10-08 21:27:18,052 - asyncio - DEBUG - Using selector: KqueueSelector
+2025-10-08 21:27:27,859 - asyncio - DEBUG - Using selector: KqueueSelector
+2025-10-08 21:28:04,558 - openevolve.evaluator - DEBUG - Program f4ad5965-d039-40b7-a7da-30db14a52685 returned artifacts: {'heat_map_train_stdout': 'Sample output to log\n', 'heat_map_train_stderr': '', 'heat_map_inference_first_test_sample_stdout': 'Sample output to log\n', 'heat_map_inference_first_test_sample_stderr': '', 'tsp_run_first_test_sample_stdout': "Reading configuration...\nNumber of cities: 200\n\nReading input data...\nSolving...\n# --------- Iteration: 100\nPhase #1 (random cycle). Total distance: 105.75366, Time: 0 ms\nPhase #2 (local 2'opt search). Total distance: 11.94613, Improved times: 1335, Time: 1 ms\nPhase #3 (local k'opt search). Total distance: 11.94613, Improved times: 0, Time: 3 ms\n\n# --------- Iteration: 200\nPhase #1 (random cycle). Total distance: 108.72154, Time: 0 ms\nPhase #2 (local 2'opt search). Total distance: 11.89701, Improved times: 1328, Time: 2 ms\nPhase #3 (local k'opt search). Total distance: 11.823951, Improved times: 1, Time: 1 ms\n\n# --------- Iteration: 300\nPhase #1 (random cycle). Total distance: 103.43521, Time: 0 ms\nPhase #2 (local 2'opt search). Total distance: 12.019147, Improved times: 1268, Time: 1 ms\nPhase #3 (local k'opt search). Total distance: 11.944169, Improved times: 3, Time: 6 ms\n\n# --------- Iteration: 400\nPhase #1 (random cycle). Total distance: 107.0981, Time: 0 ms\nPhase #2 (local 2'opt search). Total distance: 12.006514, Improved times: 1349, Time: 2 ms\nPhase #3 (local k'opt search). Total distance: 12.006514, Improved times: 0, Time: 3 ms\n\n# --------- Iteration: 500\nPhase #1 (random cycle). Total distance: 107.14274, Time: 0 ms\nPhase #2 (local 2'opt search). Total distance: 11.975603, Improved times: 1364, Time: 2 ms\nPhase #3 (local k'opt search). Total distance: 11.883382, Improved times: 3, Time: 2 ms\n\n# --------- Iteration: 600\nPhase #1 (random cycle). Total distance: 109.32016, Time: 0 ms\nPhase #2 (local 2'opt search). Total distance: 11.978417, Improved times: 1371, Time: 2 ms\nPhase #3 (local k'opt search). Total distance: 11.920649, Improved times: 3, Time: 2 ms\n\n# --------- Iteration: 700\nPhase #1 (random cycle). Total distance: 102.04474, Time: 0 ms\nPhase #2 (local 2'opt search). Total distance: 12.196009, Improved times: 1221, Time: 1 ms\nPhase #3 (local k'opt search). Total distance: 11.951597, Improved times: 6, Time: 1 ms\n\nTotal elapsed time: 4.897 sec\n\nFinal solution:\n0 68 152 38 112 58 135 20 92 169 107 114 154 121 72 126 134 197 5 198 83 70 124 182 185 74 111 181 110 172 16 189 97 66 164 148 175 158 193 165 129 100 40 51 123 18 184 35 139 89 1 191 146 141 118 96 149 160 116 44 161 155 179 136 41 147 192 65 143 86 53 119 12 168 10 170 43 84 137 8 131 77 145 176 187 93 73 105 59 91 6 64 183 54 24 47 159 140 22 87 153 150 3 108 122 151 82 90 60 39 81 178 61 188 75 32 49 163 26 117 127 180 99 46 52 23 55 48 106 31 195 133 167 128 142 177 9 85 36 13 57 42 33 113 199 186 162 80 78 62 194 101 79 104 196 88 109 115 130 17 190 11 50 103 171 144 21 69 157 71 98 29 63 156 120 34 102 94 95 45 27 30 132 7 174 56 14 67 76 138 125 25 28 37 4 173 166 2 15 19 \n\nFinal solution score: 11.30323\n", 'tsp_run_first_test_sample_stderr': ''}
+2025-10-08 21:28:04,558 - openevolve.evaluator - INFO - Evaluated program f4ad5965-d039-40b7-a7da-30db14a52685 in 47.28s: heat_map_train_time_elapsed=0.7739, average_heat_map_inference_time_elapsed=1.1478, average_tsp_run_time_elapsed=5.3511, average_path_length=11.1459, path_length_variance=0.0529, combined_score=0.0041
+2025-10-08 21:28:04,559 - openevolve.database - DEBUG - MAP-Elites coords: {'complexity': 5, 'diversity': 0}
+2025-10-08 21:28:04,559 - openevolve.database - INFO - New MAP-Elites cell occupied in island 0: {'complexity': 5, 'diversity': 0}
+2025-10-08 21:28:04,559 - openevolve.database - DEBUG - Set initial best program to f4ad5965-d039-40b7-a7da-30db14a52685
+2025-10-08 21:28:04,559 - openevolve.database - DEBUG - Set initial best program for island 0 to f4ad5965-d039-40b7-a7da-30db14a52685
+2025-10-08 21:28:04,559 - openevolve.database - DEBUG - Added program f4ad5965-d039-40b7-a7da-30db14a52685 to island 0
+2025-10-08 21:28:04,562 - openevolve.process_parallel - INFO - Initialized process parallel controller with 1 workers
+2025-10-08 21:28:04,562 - openevolve.process_parallel - INFO - Worker-to-island mapping: {0: 0}
+2025-10-08 21:28:04,563 - openevolve.process_parallel - INFO - Started process pool with 1 processes
+2025-10-08 21:28:04,563 - openevolve.controller - INFO - Using island-based evolution with 3 islands
+2025-10-08 21:28:04,563 - openevolve.database - INFO - Island Status:
+2025-10-08 21:28:04,563 - openevolve.database - INFO -  * Island 0: 1 programs, best=0.0041, avg=0.0041, diversity=0.00, gen=0 (best: f4ad5965-d039-40b7-a7da-30db14a52685)
+2025-10-08 21:28:04,563 - openevolve.database - INFO -    Island 1: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:28:04,563 - openevolve.database - INFO -    Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:28:04,563 - openevolve.process_parallel - INFO - Starting process-based evolution from iteration 1 for 100 iterations (total: 101)
+2025-10-08 21:28:04,563 - openevolve.database - DEBUG - Sampled parent f4ad5965-d039-40b7-a7da-30db14a52685 and 0 inspirations from island 0 (mode: exploitation, rand_val: 0.639)
+2025-10-08 21:28:04,565 - openevolve.database - DEBUG - Island 1 is empty, sampling from all programs
+2025-10-08 21:28:04,565 - openevolve.database - DEBUG - Sampled 0 inspirations from island 0 (island has 1 programs total)
+2025-10-08 21:28:04,565 - openevolve.database - DEBUG - Sampled parent f4ad5965-d039-40b7-a7da-30db14a52685 and 0 inspirations
+2025-10-08 21:28:04,565 - openevolve.database - DEBUG - Island 2 is empty, sampling from all programs
+2025-10-08 21:28:04,566 - openevolve.database - DEBUG - Sampled 0 inspirations from island 0 (island has 1 programs total)
+2025-10-08 21:28:04,566 - openevolve.database - DEBUG - Sampled parent f4ad5965-d039-40b7-a7da-30db14a52685 and 0 inspirations
+2025-10-08 21:28:04,566 - openevolve.process_parallel - INFO - Early stopping disabled
+2025-10-08 21:32:31,099 - openevolve.database - DEBUG - Updated diversity reference set with 2 programs
+2025-10-08 21:32:31,100 - openevolve.database - DEBUG - MAP-Elites coords: {'complexity': 9, 'diversity': 5}
+2025-10-08 21:32:31,100 - openevolve.database - DEBUG - Program cec28e59-3803-4520-8f69-35900f2f07b5 inheriting island 0 from parent f4ad5965-d039-40b7-a7da-30db14a52685
+2025-10-08 21:32:31,100 - openevolve.database - INFO - New MAP-Elites cell occupied in island 0: {'complexity': 9, 'diversity': 5}
+2025-10-08 21:32:31,100 - openevolve.database - INFO - New best program cec28e59-3803-4520-8f69-35900f2f07b5 replaces f4ad5965-d039-40b7-a7da-30db14a52685 (combined_score: 0.0041 → 0.0107, +0.0066)
+2025-10-08 21:32:31,100 - openevolve.database - DEBUG - Island 0: New best program cec28e59-3803-4520-8f69-35900f2f07b5 replaces f4ad5965-d039-40b7-a7da-30db14a52685 (combined_score: 0.0041 → 0.0107, +0.0066)
+2025-10-08 21:32:31,100 - openevolve.database - DEBUG - Added program cec28e59-3803-4520-8f69-35900f2f07b5 to island 0
+2025-10-08 21:32:31,100 - openevolve.database - DEBUG - Stored 6 small artifacts for program cec28e59-3803-4520-8f69-35900f2f07b5
+2025-10-08 21:32:31,100 - openevolve.database - DEBUG - Island 0 generation incremented to 1
+2025-10-08 21:32:31,100 - openevolve.process_parallel - INFO - Iteration 1: Program cec28e59-3803-4520-8f69-35900f2f07b5 (parent: f4ad5965-d039-40b7-a7da-30db14a52685) completed in 266.22s
+2025-10-08 21:32:31,100 - openevolve.process_parallel - INFO - Metrics: heat_map_train_time_elapsed=0.7773, average_heat_map_inference_time_elapsed=1.1500, average_tsp_run_time_elapsed=2.7871, average_path_length=11.1378, path_length_variance=0.0516, combined_score=0.0107
+2025-10-08 21:32:31,100 - openevolve.process_parallel - INFO - 🌟 New best solution found at iteration 1: cec28e59-3803-4520-8f69-35900f2f07b5
+2025-10-08 21:32:31,101 - openevolve.process_parallel - INFO - Checkpoint interval reached at iteration 1
+2025-10-08 21:32:31,101 - openevolve.database - INFO - Island Status:
+2025-10-08 21:32:31,101 - openevolve.database - INFO -  * Island 0: 2 programs, best=0.0107, avg=0.0074, diversity=1103.40, gen=1 (best: cec28e59-3803-4520-8f69-35900f2f07b5)
+2025-10-08 21:32:31,101 - openevolve.database - INFO -    Island 1: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:32:31,101 - openevolve.database - INFO -    Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:32:31,102 - openevolve.database - INFO - Saved database with 2 programs to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_1
+2025-10-08 21:32:31,103 - openevolve.controller - INFO - Saved best program at checkpoint 1 with metrics: heat_map_train_time_elapsed=0.7773, average_heat_map_inference_time_elapsed=1.1500, average_tsp_run_time_elapsed=2.7871, average_path_length=11.1378, path_length_variance=0.0516, combined_score=0.0107
+2025-10-08 21:32:31,103 - openevolve.controller - INFO - Saved checkpoint at iteration 1 to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_1
+2025-10-08 21:32:31,103 - openevolve.database - DEBUG - Sampled parent cec28e59-3803-4520-8f69-35900f2f07b5 and 0 inspirations from island 0 (mode: exploitation, rand_val: 0.677)
+2025-10-08 21:37:16,457 - openevolve.database - DEBUG - Updated diversity reference set with 3 programs
+2025-10-08 21:37:16,458 - openevolve.database - DEBUG - MAP-Elites coords: {'complexity': 3, 'diversity': 0}
+2025-10-08 21:37:16,458 - openevolve.database - DEBUG - Program a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 inheriting island 0 from parent f4ad5965-d039-40b7-a7da-30db14a52685
+2025-10-08 21:37:16,458 - openevolve.database - INFO - New MAP-Elites cell occupied in island 0: {'complexity': 3, 'diversity': 0}
+2025-10-08 21:37:16,458 - openevolve.database - INFO - New best program a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 replaces cec28e59-3803-4520-8f69-35900f2f07b5 (combined_score: 0.0107 → 0.0379, +0.0272)
+2025-10-08 21:37:16,458 - openevolve.database - DEBUG - Island 0: New best program a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 replaces cec28e59-3803-4520-8f69-35900f2f07b5 (combined_score: 0.0107 → 0.0379, +0.0272)
+2025-10-08 21:37:16,458 - openevolve.database - DEBUG - Added program a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 to island 0
+2025-10-08 21:37:16,458 - openevolve.database - DEBUG - Stored 6 small artifacts for program a2ad65e3-9423-4769-9f84-4a6fa7c5cae9
+2025-10-08 21:37:16,458 - openevolve.database - DEBUG - Island 0 generation incremented to 2
+2025-10-08 21:37:16,458 - openevolve.process_parallel - INFO - Iteration 2: Program a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 (parent: f4ad5965-d039-40b7-a7da-30db14a52685) completed in 285.35s
+2025-10-08 21:37:16,458 - openevolve.process_parallel - INFO - Metrics: heat_map_train_time_elapsed=0.7869, average_heat_map_inference_time_elapsed=1.0990, average_tsp_run_time_elapsed=1.7127, average_path_length=11.0838, path_length_variance=0.0634, combined_score=0.0379
+2025-10-08 21:37:16,458 - openevolve.process_parallel - INFO - 🌟 New best solution found at iteration 2: a2ad65e3-9423-4769-9f84-4a6fa7c5cae9
+2025-10-08 21:37:16,458 - openevolve.process_parallel - INFO - Checkpoint interval reached at iteration 2
+2025-10-08 21:37:16,460 - openevolve.database - INFO - Island Status:
+2025-10-08 21:37:16,460 - openevolve.database - INFO -  * Island 0: 3 programs, best=0.0379, avg=0.0176, diversity=735.60, gen=2 (best: a2ad65e3-9423-4769-9f84-4a6fa7c5cae9)
+2025-10-08 21:37:16,460 - openevolve.database - INFO -    Island 1: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:37:16,460 - openevolve.database - INFO -    Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:37:16,461 - openevolve.database - INFO - Saved database with 3 programs to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_2
+2025-10-08 21:37:16,462 - openevolve.controller - INFO - Saved best program at checkpoint 2 with metrics: heat_map_train_time_elapsed=0.7869, average_heat_map_inference_time_elapsed=1.0990, average_tsp_run_time_elapsed=1.7127, average_path_length=11.0838, path_length_variance=0.0634, combined_score=0.0379
+2025-10-08 21:37:16,462 - openevolve.controller - INFO - Saved checkpoint at iteration 2 to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_2
+2025-10-08 21:37:16,462 - openevolve.database - DEBUG - Island 1 is empty, sampling from all programs
+2025-10-08 21:37:16,462 - openevolve.database - DEBUG - Sampled 0 inspirations from island 0 (island has 3 programs total)
+2025-10-08 21:37:16,462 - openevolve.database - DEBUG - Sampled parent a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 and 0 inspirations
+2025-10-08 21:42:08,383 - openevolve.database - DEBUG - Updated diversity reference set with 4 programs
+2025-10-08 21:42:08,385 - openevolve.database - DEBUG - MAP-Elites coords: {'complexity': 9, 'diversity': 9}
+2025-10-08 21:42:08,385 - openevolve.database - DEBUG - Program 4c877bae-94f4-414d-931c-64f62f565804 inheriting island 0 from parent f4ad5965-d039-40b7-a7da-30db14a52685
+2025-10-08 21:42:08,385 - openevolve.database - INFO - New MAP-Elites cell occupied in island 0: {'complexity': 9, 'diversity': 9}
+2025-10-08 21:42:08,385 - openevolve.database - DEBUG - Added program 4c877bae-94f4-414d-931c-64f62f565804 to island 0
+2025-10-08 21:42:08,385 - openevolve.database - DEBUG - Stored 6 small artifacts for program 4c877bae-94f4-414d-931c-64f62f565804
+2025-10-08 21:42:08,385 - openevolve.database - DEBUG - Island 0 generation incremented to 3
+2025-10-08 21:42:08,385 - openevolve.process_parallel - INFO - Iteration 3: Program 4c877bae-94f4-414d-931c-64f62f565804 (parent: f4ad5965-d039-40b7-a7da-30db14a52685) completed in 291.93s
+2025-10-08 21:42:08,385 - openevolve.process_parallel - INFO - Metrics: heat_map_train_time_elapsed=0.8239, average_heat_map_inference_time_elapsed=1.1316, average_tsp_run_time_elapsed=3.9475, average_path_length=11.0782, path_length_variance=0.0566, combined_score=0.0133
+2025-10-08 21:42:08,385 - openevolve.process_parallel - INFO - Checkpoint interval reached at iteration 3
+2025-10-08 21:42:08,389 - openevolve.database - INFO - Island Status:
+2025-10-08 21:42:08,389 - openevolve.database - INFO -  * Island 0: 4 programs, best=0.0379, avg=0.0165, diversity=1219.35, gen=3 (best: a2ad65e3-9423-4769-9f84-4a6fa7c5cae9)
+2025-10-08 21:42:08,389 - openevolve.database - INFO -    Island 1: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:42:08,389 - openevolve.database - INFO -    Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:42:08,391 - openevolve.database - INFO - Saved database with 4 programs to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_3
+2025-10-08 21:42:08,391 - openevolve.controller - INFO - Saved best program at checkpoint 3 with metrics: heat_map_train_time_elapsed=0.7869, average_heat_map_inference_time_elapsed=1.0990, average_tsp_run_time_elapsed=1.7127, average_path_length=11.0838, path_length_variance=0.0634, combined_score=0.0379
+2025-10-08 21:42:08,391 - openevolve.controller - INFO - Saved checkpoint at iteration 3 to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_3
+2025-10-08 21:42:08,391 - openevolve.database - DEBUG - Island 2 is empty, sampling from all programs
+2025-10-08 21:42:08,391 - openevolve.database - DEBUG - Including island 0 best program a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 in inspirations
+2025-10-08 21:42:08,391 - openevolve.database - DEBUG - Sampled 1 inspirations from island 0 (island has 4 programs total)
+2025-10-08 21:42:08,391 - openevolve.database - DEBUG - Sampled parent cec28e59-3803-4520-8f69-35900f2f07b5 and 0 inspirations
+2025-10-08 21:47:22,205 - openevolve.database - DEBUG - Updated diversity reference set with 5 programs
+2025-10-08 21:47:22,207 - openevolve.database - DEBUG - MAP-Elites coords: {'complexity': 8, 'diversity': 4}
+2025-10-08 21:47:22,208 - openevolve.database - DEBUG - Program a5f4bcec-1934-4fcb-b75b-4b4377fbd140 inheriting island 0 from parent cec28e59-3803-4520-8f69-35900f2f07b5
+2025-10-08 21:47:22,208 - openevolve.database - INFO - New MAP-Elites cell occupied in island 0: {'complexity': 8, 'diversity': 4}
+2025-10-08 21:47:22,208 - openevolve.database - DEBUG - Added program a5f4bcec-1934-4fcb-b75b-4b4377fbd140 to island 0
+2025-10-08 21:47:22,208 - openevolve.database - DEBUG - Stored 6 small artifacts for program a5f4bcec-1934-4fcb-b75b-4b4377fbd140
+2025-10-08 21:47:22,208 - openevolve.database - DEBUG - Advanced to island 1
+2025-10-08 21:47:22,208 - openevolve.process_parallel - DEBUG - Switched to island 1
+2025-10-08 21:47:22,208 - openevolve.database - DEBUG - Island 1 generation incremented to 1
+2025-10-08 21:47:22,208 - openevolve.process_parallel - INFO - Iteration 4: Program a5f4bcec-1934-4fcb-b75b-4b4377fbd140 (parent: cec28e59-3803-4520-8f69-35900f2f07b5) completed in 313.83s
+2025-10-08 21:47:22,208 - openevolve.process_parallel - INFO - Metrics: heat_map_train_time_elapsed=0.8016, average_heat_map_inference_time_elapsed=1.0909, average_tsp_run_time_elapsed=5.2888, average_path_length=11.1437, path_length_variance=0.0491, combined_score=0.0033
+2025-10-08 21:47:22,208 - openevolve.process_parallel - INFO - Checkpoint interval reached at iteration 4
+2025-10-08 21:47:22,211 - openevolve.database - INFO - Island Status:
+2025-10-08 21:47:22,211 - openevolve.database - INFO -    Island 0: 5 programs, best=0.0379, avg=0.0139, diversity=1262.52, gen=3 (best: a2ad65e3-9423-4769-9f84-4a6fa7c5cae9)
+2025-10-08 21:47:22,211 - openevolve.database - INFO -  * Island 1: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=1
+2025-10-08 21:47:22,212 - openevolve.database - INFO -    Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:47:22,214 - openevolve.database - INFO - Saved database with 5 programs to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_4
+2025-10-08 21:47:22,214 - openevolve.controller - INFO - Saved best program at checkpoint 4 with metrics: heat_map_train_time_elapsed=0.7869, average_heat_map_inference_time_elapsed=1.0990, average_tsp_run_time_elapsed=1.7127, average_path_length=11.0838, path_length_variance=0.0634, combined_score=0.0379
+2025-10-08 21:47:22,214 - openevolve.controller - INFO - Saved checkpoint at iteration 4 to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_4
+2025-10-08 21:47:22,214 - openevolve.database - DEBUG - Sampled parent a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 and 0 inspirations from island 0 (mode: exploitation, rand_val: 0.233)
+2025-10-08 21:52:14,177 - openevolve.database - DEBUG - Updated diversity reference set with 6 programs
+2025-10-08 21:52:14,180 - openevolve.database - DEBUG - MAP-Elites coords: {'complexity': 9, 'diversity': 7}
+2025-10-08 21:52:14,180 - openevolve.database - DEBUG - Program 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4 inheriting island 0 from parent a2ad65e3-9423-4769-9f84-4a6fa7c5cae9
+2025-10-08 21:52:14,181 - openevolve.database - INFO - New MAP-Elites cell occupied in island 0: {'complexity': 9, 'diversity': 7}
+2025-10-08 21:52:14,181 - openevolve.database - INFO - New best program 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4 replaces a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 (combined_score: 0.0379 → 0.2570, +0.2191)
+2025-10-08 21:52:14,181 - openevolve.database - DEBUG - Island 0: New best program 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4 replaces a2ad65e3-9423-4769-9f84-4a6fa7c5cae9 (combined_score: 0.0379 → 0.2570, +0.2191)
+2025-10-08 21:52:14,181 - openevolve.database - DEBUG - Added program 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4 to island 0
+2025-10-08 21:52:14,181 - openevolve.database - DEBUG - Stored 6 small artifacts for program 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4
+2025-10-08 21:52:14,181 - openevolve.database - DEBUG - Island 1 generation incremented to 2
+2025-10-08 21:52:14,181 - openevolve.process_parallel - INFO - Iteration 5: Program 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4 (parent: a2ad65e3-9423-4769-9f84-4a6fa7c5cae9) completed in 291.97s
+2025-10-08 21:52:14,181 - openevolve.process_parallel - INFO - Metrics: heat_map_train_time_elapsed=0.7886, average_heat_map_inference_time_elapsed=1.1424, average_tsp_run_time_elapsed=1.0722, average_path_length=11.0428, path_length_variance=0.0498, combined_score=0.2570
+2025-10-08 21:52:14,181 - openevolve.process_parallel - INFO - 🌟 New best solution found at iteration 5: 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4
+2025-10-08 21:52:14,181 - openevolve.process_parallel - INFO - Checkpoint interval reached at iteration 5
+2025-10-08 21:52:14,184 - openevolve.database - INFO - Island Status:
+2025-10-08 21:52:14,184 - openevolve.database - INFO -    Island 0: 6 programs, best=0.2570, avg=0.0544, diversity=1090.37, gen=3 (best: 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4)
+2025-10-08 21:52:14,184 - openevolve.database - INFO -  * Island 1: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=2
+2025-10-08 21:52:14,184 - openevolve.database - INFO -    Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:52:14,187 - openevolve.database - INFO - Saved database with 6 programs to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_5
+2025-10-08 21:52:14,188 - openevolve.controller - INFO - Saved best program at checkpoint 5 with metrics: heat_map_train_time_elapsed=0.7886, average_heat_map_inference_time_elapsed=1.1424, average_tsp_run_time_elapsed=1.0722, average_path_length=11.0428, path_length_variance=0.0498, combined_score=0.2570
+2025-10-08 21:52:14,188 - openevolve.controller - INFO - Saved checkpoint at iteration 5 to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_5
+2025-10-08 21:52:14,188 - openevolve.database - DEBUG - Island 1 is empty, sampling from all programs
+2025-10-08 21:52:14,188 - openevolve.database - DEBUG - Initialized empty island 1 with copy of best program
+2025-10-08 21:52:14,188 - openevolve.database - DEBUG - Sampled 0 inspirations from island 1 (island has 1 programs total)
+2025-10-08 21:52:14,188 - openevolve.database - DEBUG - Sampled parent 1875484e-784d-434a-9f4a-e3fe95323182 and 0 inspirations
+2025-10-08 21:57:08,799 - openevolve.database - DEBUG - Updated diversity reference set with 8 programs
+2025-10-08 21:57:08,803 - openevolve.database - DEBUG - MAP-Elites coords: {'complexity': 6, 'diversity': 2}
+2025-10-08 21:57:08,803 - openevolve.database - DEBUG - Program 39258d5a-80dc-4234-a22d-c00bd15a9633 inheriting island 0 from parent cec28e59-3803-4520-8f69-35900f2f07b5
+2025-10-08 21:57:08,803 - openevolve.database - INFO - New MAP-Elites cell occupied in island 0: {'complexity': 6, 'diversity': 2}
+2025-10-08 21:57:08,803 - openevolve.database - DEBUG - Added program 39258d5a-80dc-4234-a22d-c00bd15a9633 to island 0
+2025-10-08 21:57:08,803 - openevolve.database - DEBUG - Stored 6 small artifacts for program 39258d5a-80dc-4234-a22d-c00bd15a9633
+2025-10-08 21:57:08,803 - openevolve.database - DEBUG - Island 1 generation incremented to 3
+2025-10-08 21:57:08,803 - openevolve.process_parallel - INFO - Iteration 6: Program 39258d5a-80dc-4234-a22d-c00bd15a9633 (parent: cec28e59-3803-4520-8f69-35900f2f07b5) completed in 294.63s
+2025-10-08 21:57:08,803 - openevolve.process_parallel - INFO - Metrics: heat_map_train_time_elapsed=0.7704, average_heat_map_inference_time_elapsed=1.1160, average_tsp_run_time_elapsed=2.5885, average_path_length=11.3372, path_length_variance=0.0553, combined_score=0.0004
+2025-10-08 21:57:08,803 - openevolve.process_parallel - INFO - Checkpoint interval reached at iteration 6
+2025-10-08 21:57:08,807 - openevolve.database - INFO - Island Status:
+2025-10-08 21:57:08,807 - openevolve.database - INFO -    Island 0: 7 programs, best=0.2570, avg=0.0467, diversity=844.05, gen=3 (best: 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4)
+2025-10-08 21:57:08,807 - openevolve.database - INFO -  * Island 1: 1 programs, best=0.2570, avg=0.2570, diversity=0.00, gen=3
+2025-10-08 21:57:08,807 - openevolve.database - INFO -    Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=0
+2025-10-08 21:57:08,810 - openevolve.database - INFO - Saved database with 8 programs to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_6
+2025-10-08 21:57:08,811 - openevolve.controller - INFO - Saved best program at checkpoint 6 with metrics: heat_map_train_time_elapsed=0.7886, average_heat_map_inference_time_elapsed=1.1424, average_tsp_run_time_elapsed=1.0722, average_path_length=11.0428, path_length_variance=0.0498, combined_score=0.2570
+2025-10-08 21:57:08,811 - openevolve.controller - INFO - Saved checkpoint at iteration 6 to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_6
+2025-10-08 21:57:08,811 - openevolve.database - DEBUG - Island 2 is empty, sampling from all programs
+2025-10-08 21:57:08,811 - openevolve.database - DEBUG - Sampled 0 inspirations from island 1 (island has 1 programs total)
+2025-10-08 21:57:08,811 - openevolve.database - DEBUG - Sampled parent 1875484e-784d-434a-9f4a-e3fe95323182 and 0 inspirations
+2025-10-08 22:04:30,455 - openevolve.process_parallel - WARNING - Iteration 7 error: SEARCH block #2 not found in target source.
+First SEARCH line: '* heat_map_inference.py *:'
+Hint: check for small whitespace differences or CRLF/LF issues.
+2025-10-08 22:04:30,455 - openevolve.database - DEBUG - Sampled parent f4ad5965-d039-40b7-a7da-30db14a52685 and 0 inspirations from island 0 (mode: exploitation, rand_val: 0.220)
+2025-10-08 22:09:32,123 - openevolve.database - DEBUG - Updated diversity reference set with 9 programs
+2025-10-08 22:09:32,128 - openevolve.database - DEBUG - MAP-Elites coords: {'complexity': 9, 'diversity': 9}
+2025-10-08 22:09:32,128 - openevolve.database - DEBUG - Program 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f inheriting island 1 from parent 1875484e-784d-434a-9f4a-e3fe95323182
+2025-10-08 22:09:32,128 - openevolve.database - INFO - New MAP-Elites cell occupied in island 1: {'complexity': 9, 'diversity': 9}
+2025-10-08 22:09:32,128 - openevolve.database - DEBUG - Set initial best program for island 1 to 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f
+2025-10-08 22:09:32,128 - openevolve.database - DEBUG - Added program 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f to island 1
+2025-10-08 22:09:32,128 - openevolve.database - DEBUG - Stored 7 small artifacts for program 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f
+2025-10-08 22:09:32,128 - openevolve.database - DEBUG - Advanced to island 2
+2025-10-08 22:09:32,128 - openevolve.process_parallel - DEBUG - Switched to island 2
+2025-10-08 22:09:32,128 - openevolve.database - DEBUG - Island 2 generation incremented to 1
+2025-10-08 22:09:32,128 - openevolve.process_parallel - INFO - Iteration 8: Program 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f (parent: 1875484e-784d-434a-9f4a-e3fe95323182) completed in 301.67s
+2025-10-08 22:09:32,128 - openevolve.process_parallel - INFO - Metrics: heat_map_train_time_elapsed=0.7627, average_heat_map_inference_time_elapsed=1.1046, average_tsp_run_time_elapsed=0.0000, average_path_length=0.0000, path_length_variance=0.0000, combined_score=0.0000, error=unhandled errors in a TaskGroup (1 sub-exception)
+2025-10-08 22:09:32,128 - openevolve.process_parallel - INFO - Checkpoint interval reached at iteration 8
+2025-10-08 22:09:32,133 - openevolve.database - INFO - Island Status:
+2025-10-08 22:09:32,133 - openevolve.database - INFO -    Island 0: 7 programs, best=0.2570, avg=0.0467, diversity=844.05, gen=3 (best: 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4)
+2025-10-08 22:09:32,133 - openevolve.database - INFO -    Island 1: 2 programs, best=0.2570, avg=0.1285, diversity=950.30, gen=3 (best: 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f)
+2025-10-08 22:09:32,133 - openevolve.database - INFO -  * Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=1
+2025-10-08 22:09:32,137 - openevolve.database - INFO - Saved database with 9 programs to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_8
+2025-10-08 22:09:32,138 - openevolve.controller - INFO - Saved best program at checkpoint 8 with metrics: heat_map_train_time_elapsed=0.7886, average_heat_map_inference_time_elapsed=1.1424, average_tsp_run_time_elapsed=1.0722, average_path_length=11.0428, path_length_variance=0.0498, combined_score=0.2570
+2025-10-08 22:09:32,138 - openevolve.controller - INFO - Saved checkpoint at iteration 8 to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_8
+2025-10-08 22:09:32,138 - openevolve.database - DEBUG - Sampled parent 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f and 0 inspirations from island 1 (mode: exploitation, rand_val: 0.278)
+2025-10-08 22:10:41,469 - openevolve.controller - INFO - Received signal 2, initiating graceful shutdown...
+2025-10-08 22:10:41,470 - openevolve.process_parallel - INFO - Graceful shutdown requested...
+2025-10-08 22:10:41,470 - openevolve.process_parallel - INFO - Shutdown requested, canceling remaining evaluations...
+2025-10-08 22:10:41,470 - openevolve.process_parallel - INFO - ✅ Evolution completed - Shutdown requested
+2025-10-08 22:10:41,470 - openevolve.database - DEBUG - Using tracked best program: 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4
+2025-10-08 22:10:41,470 - openevolve.controller - INFO - Evolution stopped due to shutdown request
+2025-10-08 22:10:41,937 - openevolve.controller - INFO - Force exit requested - terminating immediately
+2025-10-08 22:10:42,306 - openevolve.controller - INFO - Force exit requested - terminating immediately

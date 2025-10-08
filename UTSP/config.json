@@ -1,5 +1,5 @@
 {
-    "cities_number": 128,
+    "cities_number": 200,
     "input_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/sample_input.txt",
     "output_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/sample_output.txt",
     "use_heat_map_as_initial_weights": true,
@@ -12,7 +12,7 @@
     "weight_delta_coefficient": 10.0,
     "sensitivity_temperature": 1.0,
     "max_k_opt_simulations_without_improve_to_stop": 200,
-    "restarts_number": 1000,
-    "distance_type": "int32",
+    "restarts_number": 750,
+    "distance_type": "int64",
     "magnify_rate": 1000000
 }

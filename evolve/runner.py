@@ -44,11 +44,12 @@ def parse_output_files(output_files_paths: list[str]) -> np.ndarray:
 def run(
     dir_path: str,
     cities: np.ndarray,
-    heat_map_train_timeout: 360.0,
+    heat_map_train_timeout: float = 360.0,
     heat_map_inference_timeout: float = 60.0,
     tsp_compilation_timeout: float = 10.0,
     tsp_run_timeout: float = 60.0,
     verbose: bool = False,
+    output_saver: dict | None = None
 ) -> dict:
     create_dir(f"{dir_path}/input_files")
     create_dir(f"{dir_path}/output_files")
@@ -61,10 +62,12 @@ def run(
     # train
     heat_map_train_data = run_python_heat_map_train(f"{dir_path}/heat_map_train.py", timeout=heat_map_train_timeout)
     if verbose: print("Heat map train complete.")
+    if output_saver is not None: output_saver["heat_map_train_data"] = heat_map_train_data
 
     # inference
     heat_map_inference_results = run_heat_maps_parallel(f"{dir_path}/heat_map_inference.py", cities, f"{dir_path}/heat_map_results", heat_map_inference_timeout, max_workers=None)  # in format [(index, npy_path, time_elapsed), ...]
     if verbose: print("Heat map inference complete.")
+    if output_saver is not None: output_saver["heat_map_inference_data"] = heat_map_inference_results
 
     # compilation of TSP.cpp
     compile_tsp_executable(dir_path, timeout=tsp_compilation_timeout)
@@ -83,10 +86,12 @@ def run(
     # running compiled binary
     tsp_run_data = run_runner_parallel(f"{dir_path}/bin/runner", config_paths, timeout=tsp_run_timeout)
     if verbose: print("TSP run complete.")
+    if output_saver is not None: output_saver["tsp_run_data"] = tsp_run_data
 
     # parsing output
     solutions = parse_output_files(output_paths)
     if verbose: print("Parsing output files complete.")
+    if output_saver is not None: output_saver["solutions"] = solutions
 
     return {
         "heat_map_train_data": heat_map_train_data,

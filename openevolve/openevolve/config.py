@@ -42,6 +42,10 @@ class LLMModelConfig:
     # Reasoning parameters
     reasoning_effort: Optional[str] = None
 
+    # Manual
+    manual_mode: Optional[bool] = None
+    manual_queue_dir: Optional[str] = None
+
 
 @dataclass
 class LLMConfig(LLMModelConfig):
@@ -75,6 +79,10 @@ class LLMConfig(LLMModelConfig):
     
     # Reasoning parameters (inherited from LLMModelConfig but can be overridden)
     reasoning_effort: Optional[str] = None
+
+    # Manual
+    manual_mode: Optional[bool] = None
+    manual_queue_dir: Optional[str] = None
 
     def __post_init__(self):
         """Post-initialization to set up model configurations"""
@@ -128,6 +136,8 @@ class LLMConfig(LLMModelConfig):
             "retry_delay": self.retry_delay,
             "random_seed": self.random_seed,
             "reasoning_effort": self.reasoning_effort,
+            "manual_mode": self.manual_mode,
+            "manual_queue_dir": self.manual_queue_dir,
         }
         self.update_model_params(shared_config)
 
@@ -181,6 +191,8 @@ class LLMConfig(LLMModelConfig):
             "retry_delay": self.retry_delay,
             "random_seed": self.random_seed,
             "reasoning_effort": self.reasoning_effort,
+            "manual_mode": self.manual_mode,
+            "manual_queue_dir": self.manual_queue_dir,
         }
         self.update_model_params(shared_config)
 
@@ -196,6 +208,15 @@ class PromptConfig:
     # Number of examples to include in the prompt
     num_top_programs: int = 3
     num_diverse_programs: int = 2
+
+    # HARD CAP on total *full-code* program blocks in the prompt (top + diverse + inspirations)
+    # If None, legacy behavior (no global cap; section-level limits apply).
+    max_full_program_blocks: Optional[int] = None
+
+    # Section toggles (so you can kill entire sections without touching templates)
+    include_previous_attempts_in_prompt: bool = True
+    include_diverse_programs_in_prompt: bool = True
+    include_inspirations_in_prompt: bool = True
 
     # Template stochasticity
     use_template_stochasticity: bool = True

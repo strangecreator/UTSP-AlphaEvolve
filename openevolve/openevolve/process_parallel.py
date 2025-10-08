@@ -229,6 +229,10 @@ def _run_iteration_worker(
                 error=f"Generated code exceeds maximum length ({len(child_code)} > {_worker_config.max_code_length})",
                 iteration=iteration,
             )
+        
+        # Building child id
+        import uuid
+        child_id = str(uuid.uuid4())
 
         # Build lineage from snapshot (from oldest to newest, then add child)
         def _build_lineage(programs_dict, start_pid: str) -> List[str]:
@@ -259,9 +263,6 @@ def _run_iteration_worker(
         }
 
         # Evaluate the child program (Evaluator will write `{program_path}.meta.json`)
-        import uuid
-
-        child_id = str(uuid.uuid4())
         child_metrics = asyncio.run(_worker_evaluator.evaluate_program(child_code, child_id, metadata=eval_metadata))
 
         # Get artifacts

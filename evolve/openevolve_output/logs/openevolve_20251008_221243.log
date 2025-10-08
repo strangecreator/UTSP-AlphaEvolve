@@ -1,0 +1,53 @@
+2025-10-08 22:12:43,496 - openevolve.controller - INFO - Logging to /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/logs/openevolve_20251008_221243.log
+2025-10-08 22:12:43,501 - openevolve.controller - INFO - Set random seed to 42 for reproducibility
+2025-10-08 22:12:43,501 - openevolve.controller - DEBUG - Generated LLM seed: 191216760
+2025-10-08 22:12:43,502 - openevolve.llm.openai - INFO - Manual mode is ON. Queue dir: /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/temp/manual_queue
+2025-10-08 22:12:43,502 - openevolve.llm.openai - INFO - Initialized OpenAI LLM with model: gpt-5
+2025-10-08 22:12:43,503 - openevolve.llm.ensemble - DEBUG - LLMEnsemble: Set random seed to 191216760 for deterministic model selection
+2025-10-08 22:12:43,503 - openevolve.llm.ensemble - INFO - Initialized LLM ensemble with models: gpt-5 (weight: 1.00)
+2025-10-08 22:12:43,503 - openevolve.llm.openai - INFO - Manual mode is ON. Queue dir: /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/temp/manual_queue
+2025-10-08 22:12:43,503 - openevolve.llm.ensemble - DEBUG - LLMEnsemble: Set random seed to 191216760 for deterministic model selection
+2025-10-08 22:12:43,503 - openevolve.prompt.sampler - INFO - Initialized prompt sampler
+2025-10-08 22:12:43,504 - openevolve.prompt.sampler - INFO - Set custom templates: system=evaluator_system_message, user=None
+2025-10-08 22:12:43,504 - openevolve.database - DEBUG - Database: Set random seed to 42
+2025-10-08 22:12:43,504 - openevolve.database - INFO - Initialized program database with 0 programs
+2025-10-08 22:12:43,509 - openevolve.evaluator - INFO - Successfully loaded evaluation function from /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/evaluator.py
+2025-10-08 22:12:43,509 - openevolve.evaluator - INFO - Initialized evaluator with /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/evaluator.py
+2025-10-08 22:12:43,509 - openevolve.controller - INFO - Initialized OpenEvolve with /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/initial_program.txt
+2025-10-08 22:12:43,509 - asyncio - DEBUG - Using selector: KqueueSelector
+2025-10-08 22:12:43,509 - openevolve.controller - INFO - Loading checkpoint from /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_8
+2025-10-08 22:12:43,509 - openevolve.database - INFO - Loaded database metadata with last_iteration=8
+2025-10-08 22:12:43,509 - openevolve.database - INFO - Loaded feature_stats for 2 dimensions
+2025-10-08 22:12:43,512 - openevolve.database - INFO - Reconstructed islands: restored 9 programs to islands
+2025-10-08 22:12:43,512 - openevolve.database - INFO - Loaded database with 9 programs from /Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/evolve/openevolve_output/checkpoints/checkpoint_8
+2025-10-08 22:12:43,516 - openevolve.database - INFO - Island Status:
+2025-10-08 22:12:43,516 - openevolve.database - INFO -    Island 0: 7 programs, best=0.2570, avg=0.0467, diversity=844.05, gen=3 (best: 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4)
+2025-10-08 22:12:43,516 - openevolve.database - INFO -    Island 1: 2 programs, best=0.2570, avg=0.1285, diversity=950.30, gen=3 (best: 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f)
+2025-10-08 22:12:43,516 - openevolve.database - INFO -  * Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=1
+2025-10-08 22:12:43,516 - openevolve.controller - INFO - Checkpoint loaded successfully (iteration 8)
+2025-10-08 22:12:43,516 - openevolve.controller - INFO - Resuming from checkpoint at iteration 9
+2025-10-08 22:12:43,516 - openevolve.controller - INFO - Skipping initial program addition (resuming from iteration 9 with 9 existing programs)
+2025-10-08 22:12:43,520 - openevolve.process_parallel - INFO - Initialized process parallel controller with 1 workers
+2025-10-08 22:12:43,520 - openevolve.process_parallel - INFO - Worker-to-island mapping: {0: 0}
+2025-10-08 22:12:43,521 - openevolve.process_parallel - INFO - Started process pool with 1 processes
+2025-10-08 22:12:43,521 - openevolve.controller - INFO - Using island-based evolution with 3 islands
+2025-10-08 22:12:43,526 - openevolve.database - INFO - Island Status:
+2025-10-08 22:12:43,526 - openevolve.database - INFO -    Island 0: 7 programs, best=0.2570, avg=0.0467, diversity=844.05, gen=3 (best: 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4)
+2025-10-08 22:12:43,526 - openevolve.database - INFO -    Island 1: 2 programs, best=0.2570, avg=0.1285, diversity=950.30, gen=3 (best: 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f)
+2025-10-08 22:12:43,526 - openevolve.database - INFO -  * Island 2: 0 programs, best=0.0000, avg=0.0000, diversity=0.00, gen=1
+2025-10-08 22:12:43,526 - openevolve.process_parallel - INFO - Starting process-based evolution from iteration 9 for 100 iterations (total: 109)
+2025-10-08 22:12:43,526 - openevolve.database - DEBUG - Sampled parent 39258d5a-80dc-4234-a22d-c00bd15a9633 and 0 inspirations from island 0 (mode: exploitation, rand_val: 0.639)
+2025-10-08 22:12:43,530 - openevolve.database - DEBUG - Sampled parent 54d2b041-75c5-4c77-9ac8-d0ef7f12ab5f and 0 inspirations from island 1 (mode: exploitation, rand_val: 0.742)
+2025-10-08 22:12:43,530 - openevolve.database - DEBUG - Island 2 is empty, sampling from all programs
+2025-10-08 22:12:43,530 - openevolve.database - DEBUG - Including island 0 best program 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4 in inspirations
+2025-10-08 22:12:43,531 - openevolve.database - DEBUG - Sampled 1 inspirations from island 0 (island has 7 programs total)
+2025-10-08 22:12:43,532 - openevolve.database - DEBUG - Sampled parent f4ad5965-d039-40b7-a7da-30db14a52685 and 0 inspirations
+2025-10-08 22:12:43,532 - openevolve.process_parallel - INFO - Early stopping disabled
+2025-10-08 22:14:42,948 - openevolve.controller - INFO - Received signal 2, initiating graceful shutdown...
+2025-10-08 22:14:42,948 - openevolve.process_parallel - INFO - Graceful shutdown requested...
+2025-10-08 22:14:42,958 - openevolve.process_parallel - INFO - Shutdown requested, canceling remaining evaluations...
+2025-10-08 22:14:42,958 - openevolve.process_parallel - INFO - ✅ Evolution completed - Shutdown requested
+2025-10-08 22:14:42,958 - openevolve.database - DEBUG - Using tracked best program: 65d55f41-d7aa-4b0b-9c1c-a76b1e29c3f4
+2025-10-08 22:14:42,958 - openevolve.controller - INFO - Evolution stopped due to shutdown request
+2025-10-08 22:14:43,255 - openevolve.controller - INFO - Force exit requested - terminating immediately
+2025-10-08 22:14:43,460 - openevolve.controller - INFO - Force exit requested - terminating immediately

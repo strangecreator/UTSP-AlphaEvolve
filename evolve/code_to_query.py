@@ -1,4 +1,5 @@
 import sys
+import shutil
 import pathlib
 
 BASE_DIR = pathlib.Path(__file__).parent.parent
@@ -8,7 +9,9 @@ sys.path.append(str(BASE_DIR / "evolve"))
 from utils import *
 
 
-# TODO: add parsing errors to the query
+JSON_HPP_PATH = str(BASE_DIR / "UTSP/include/json.hpp")
+
+
 TEMPLATE = """
 * heat_map_train.py *:
 @@@
@@ -123,7 +126,7 @@ def parse_output_code(text: str) -> None:
     }
 
 
-def save_parsed_output_code(parsed_code: dict, dir_path: str) -> None:
+def save_parsed_output_code(parsed_code: dict, dir_path: str, include_json_hpp: bool = True) -> None:
     for name, block_code in parsed_code.items():
         filename = NAMES_TO_FILENAMES[name]
 
@@ -132,6 +135,9 @@ def save_parsed_output_code(parsed_code: dict, dir_path: str) -> None:
 
         with open(file_path, 'w') as file:
             file.write(block_code)
+    
+    if include_json_hpp:
+        shutil.copy2(JSON_HPP_PATH, f"{dir_path}/include")
 
 
 if __name__ == "__main__":

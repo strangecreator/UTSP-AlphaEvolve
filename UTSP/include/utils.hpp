@@ -7,6 +7,9 @@
 #include <algorithm>
 
 
+constexpr double BHH_CONSTANT_2D = 0.7120;  // Beardwood–Halton–Hammersley (BHH) constant
+
+
 long long int64_sqrt(long long value) {
     if (value < 0) return null;  // invalid for negatives
     if (value < 2) return value;
@@ -147,4 +150,15 @@ void reverse_sub_path(Context& context, int i, int j) {
 
         current_city = context.path[current_city].prev;
     }
+}
+
+
+double expected_tsp_length_2d(long long n, double width, double height) {
+    if (n <= 1 || width <= 0.0 || height <= 0.0) {
+        return 0.0;
+    }
+
+    double area = width * height;
+    double expected_length = BHH_CONSTANT_2D * std::sqrt(static_cast<double>(n) * area);
+    return expected_length;
 }
