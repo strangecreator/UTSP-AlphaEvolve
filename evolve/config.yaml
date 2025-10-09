@@ -27,7 +27,7 @@ prompt:
 
     Your task is to explore a new method or improvement that surpasses the current implementations in terms of the combined score, defined as a function of the average Hamiltonian cycle length and the average time required to produce a solution.
 
-    It seems that implementation that uses double type to calc distances is quite slow (in comparison with int32 and int64).
+    It seems that implementation that uses double type to calc distances is quite slow (in comparison with int32 and int64, that is why the initial program contains implementation in 3 types).
 
     Do not modify the `cities_number` in config.json, as it will be automatically replaced with the appropriate value during testing. Also, do not modify the `input_path` or `output_path` parameters. All other parameters may be edited.
     Additional information: all test cities were randomly generated within the square [0, 1] × [0, 1] (as is standard in most papers). The number of test samples in a testing batch ranges from 32 to 128, depending on the value of cities_number.

@@ -82,16 +82,18 @@ def calc_combined_score(
     time_elapsed: list[float | int | None],
     h: float = 1.0,
     w: float = 1.0,
+    *,
+    alpha: float = 30.0,    # distance weight (bigger -> harsher on gap)
+    beta: float = 1.0,      # time weight (smaller than alpha)
+    g_cut: float = 0.15,    # hard cutoff on bad tours (set to None to disable)
+    eps_time: float = 1e-3  # floor for time scale
 ) -> float:
     """
-    Combined score for AlphaEvolve:
-      - distance is a gate only (protect quality),
-      - speed drives the score.
+    Distance-dominant combined score for TSP:
+      S_i = exp(-alpha * gap_i) * (1 + t_i / t_ref)^(-beta) * 1[g_i <= g_cut]
+      gap_i = max(0, distances[i] / L_star - 1)
 
-    Gate: full pass if gap <= 5%, zero if gap >= 7%, linear in between.
-    Speed term: 1 / max(time, 1e-3).
-
-    Returns a single float; larger is better.
+    Larger is better. Strongly prioritizes tour quality; time is a tie-breaker/regularizer.
     """
 
     if n < 3:
@@ -99,48 +101,46 @@ def calc_combined_score(
     if h <= 0 or w <= 0:
         raise ValueError("h and w must be positive.")
 
-    distances = np.asarray(distances, dtype=np.float64).ravel()
-    m = distances.shape[0]
+    dists = np.asarray(distances, dtype=np.float64).ravel()
+    m = dists.shape[0]
     if len(time_elapsed) != m:
         raise ValueError("len(time_elapsed) must match distances.shape[0].")
 
-    # Estimate optimal length via BHH (asymptotically accurate; good for large n)
+    # Baseline optimal length via BHH
     L_star = float(approximation_using_BHH_constant(n, h=h, w=w))
     if not np.isfinite(L_star) or L_star <= 0:
         raise ValueError("Invalid L_star computed from BHH approximation.")
 
-    # Relative gaps (negative gaps -> treat as 0; we don't reward below-estimate extra)
-    gaps = np.maximum(0.0, distances / L_star - 1.0)
+    # Relative gaps (clip negative)
+    gaps = np.maximum(0.0, dists / L_star - 1.0)
 
-    # Distance gate: <=5% -> 1, >=7% -> 0, linear in [5%, 7%)
-    g_soft, g_hard = 0.05, 0.07
-    gate = np.where(
-        gaps <= g_soft,
-        1.0,
-        np.where(
-            gaps >= g_hard,
-            0.0,
-            (g_hard - gaps) / (g_hard - g_soft),
-        ),
-    )
+    # Distance factor (dominant)
+    dist_factor = np.exp(-alpha * gaps)
 
-    # Time scores; None/invalid times -> zero contribution
-    EPS_TIME = 1e-3  # 1 ms floor to prevent blow-ups
-    t_arr = np.empty(m, dtype=np.float64)
+    # Optional hard cutoff for junk solutions
+    if g_cut is not None:
+        dist_factor = np.where(gaps <= g_cut, dist_factor, 0.0)
+
+    # Robust time scale t_ref = median of valid times (fallback to 1.0)
+    t_vals = []
+    for t in time_elapsed:
+        if t is not None and np.isfinite(t) and t > 0:
+            t_vals.append(float(t))
+    t_ref = float(np.median(t_vals)) if t_vals else 1.0
+    t_ref = max(t_ref, eps_time)
+
+    # Time factor (secondary). If time is invalid, treat as neutral (1.0),
+    # so distance truly dominates rather than zeroing the instance.
+    time_factor = np.empty(m, dtype=np.float64)
     for i, t in enumerate(time_elapsed):
         if t is None or not np.isfinite(t) or t <= 0:
-            t_arr[i] = np.inf  # will yield time_score=0
+            time_factor[i] = 1.0  # neutral modifier; distance decides
         else:
-            t_arr[i] = float(t)
+            time_factor[i] = (1.0 + float(t) / t_ref) ** (-beta)
 
-    time_score = 1.0 / np.maximum(t_arr, EPS_TIME)
-    per_instance = gate * time_score
-
-    # Final score is mean over batch (if everything is invalid -> 0.0)
-    score = float(np.mean(per_instance)) if np.any(np.isfinite(per_instance)) else 0.0
-    if not np.isfinite(score):
-        return 0.0
-    return score
+    per_instance = dist_factor * time_factor
+    score = float(per_instance.mean()) if m > 0 else 0.0
+    return 0.0 if not np.isfinite(score) else score
 
 
 def evaluate(program_path: str) -> dict:
