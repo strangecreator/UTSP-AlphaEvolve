@@ -18,6 +18,29 @@ from openevolve.utils.metrics_utils import (
 logger = logging.getLogger(__name__)
 
 
+def parse_code_block(text: str, block_header: str) -> str | None:
+    text_splitted = text.split(block_header, maxsplit=1)
+
+    if len(text_splitted) < 2: return None
+
+    block_code = text_splitted[1].strip()
+
+    if not block_code.startswith("@@@\n"): return None
+    
+    block_code = block_code.removeprefix("@@@\n").strip()
+
+    if "\n@@@" not in block_code: return None
+
+    return block_code.split("\n@@@", maxsplit=1)[0].strip()
+
+
+def retrieve_text_changes(text: str) -> str:
+    code_block = parse_code_block(text, "* changes_description.txt *:")
+
+    if code_block is None: return "Could not parse changes description (maybe it does not exist)."
+    return code_block
+
+
 class PromptSampler:
     """Generates prompts for code evolution"""
 
@@ -56,7 +79,7 @@ class PromptSampler:
         previous_programs: List[Dict[str, Any]] = [],
         top_programs: List[Dict[str, Any]] = [],
         inspirations: List[Dict[str, Any]] = [],  # Add inspirations parameter
-        language: str = "python",
+        language: str = '',
         evolution_round: int = 0,
         diff_based_evolution: bool = True,
         template_key: Optional[str] = None,
@@ -309,6 +332,9 @@ class PromptSampler:
         for i, program in enumerate(selected_top):
             # Use the full program code
             program_code = program.get("code", "")
+            
+            if self.config.include_only_text_changes:
+                program_code = retrieve_text_changes(program_code)
 
             # Calculate fitness score (prefers combined_score, excludes feature dimensions)
             score = get_fitness_score(program.get("metrics", {}), feature_dimensions or [])
@@ -359,6 +385,9 @@ class PromptSampler:
                 for i, program in enumerate(diverse_programs):
                     # Use the full program code
                     program_code = program.get("code", "")
+
+                    if self.config.include_only_text_changes:
+                        program_code = retrieve_text_changes(program_code)
 
                     # Calculate fitness score (prefers combined_score, excludes feature dimensions)
                     score = get_fitness_score(program.get("metrics", {}), feature_dimensions or [])

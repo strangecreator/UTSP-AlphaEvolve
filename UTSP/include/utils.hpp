@@ -6,6 +6,9 @@
 #include <numeric>
 #include <algorithm>
 
+// other imports
+#include "context.hpp"
+
 
 constexpr double BHH_CONSTANT_2D = 0.7120;  // Beardwood–Halton–Hammersley (BHH) constant
 
@@ -31,6 +34,11 @@ long long int64_sqrt(long long value) {
         }
     }
     return floor_root;
+}
+
+double smooth_relu(double x) {
+    if (x < 0) { return pow(e, x); }
+    return x + 1.0;
 }
 
 
@@ -113,6 +121,18 @@ void calc_and_save_total_distance(const Config& config, Context& context) {
 }
 
 
+void update_weight_undirected(const Config& config, Context& context, int i, int j, double weight_delta) {
+    context.total_weight[i] -= smooth_relu(context.weight[i * config.cities_number + j]);
+    context.total_weight[j] -= smooth_relu(context.weight[j * config.cities_number + i]);
+
+    context.weight[i * config.cities_number + j] += weight_delta;
+    context.weight[j * config.cities_number + i] += weight_delta;
+
+    context.total_weight[i] += smooth_relu(context.weight[i * config.cities_number + j]);
+    context.total_weight[j] += smooth_relu(context.weight[j * config.cities_number + i]);
+}
+
+
 void identify_candidates_for_each_node(const Config& config, Context& context, const double* metric, bool is_reversed) {
 	for (int i = 0; i < config.cities_number; ++i) {
         std::iota(context.buffer.begin(), context.buffer.end(), 0);  // just a simple range(0, n), vector should be filled to use std::iota
@@ -153,7 +173,7 @@ void reverse_sub_path(Context& context, int i, int j) {
 }
 
 
-double expected_tsp_length_2d(long long n, double width, double height) {
+double expected_optimal_tsp_length_2d(long long n, double width, double height) {
     if (n <= 1 || width <= 0.0 || height <= 0.0) {
         return 0.0;
     }

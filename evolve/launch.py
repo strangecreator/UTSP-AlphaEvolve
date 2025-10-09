@@ -1,3 +1,4 @@
+import re
 import sys
 import pathlib
 import asyncio
@@ -13,6 +14,24 @@ from openevolve import OpenEvolve
 # other imports
 from utils import *
 from code_to_query import *
+
+
+def latest_checkpoint(dir_path: pathlib.Path) -> str | None:
+    pairs: list[tuple[int, pathlib.Path]] = []
+
+    for p in dir_path.glob("checkpoint_*"):
+        if not p.is_dir():
+            continue
+        m = re.fullmatch(r"checkpoint_(\d+)", p.name)  # digits at the end only
+        if m:
+            pairs.append((int(m.group(1)), p))
+
+    if not pairs:
+        return None
+
+    # picking the largest numeric suffix, tie-break by mod time just in case
+    _, path = max(pairs, key=lambda t: (t[0], t[1].stat().st_mtime))
+    return str(path)
 
 
 async def main(evolve, checkpoint_path: str | None):
@@ -40,8 +59,7 @@ if __name__ == "__main__":
     )
 
     # latest checkpoint
-    all_checkpoints = sorted((BASE_DIR / "evolve/openevolve_output/checkpoints").glob("checkpoint_*"))
-    checkpoint_path = str(all_checkpoints[-1]) if all_checkpoints else None
+    checkpoint_path = latest_checkpoint(BASE_DIR / "evolve/openevolve_output/checkpoints")
     print(f"Using checkpoint: '{checkpoint_path}'.")
 
     # running evolution

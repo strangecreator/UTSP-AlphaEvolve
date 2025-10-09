@@ -62,6 +62,11 @@ TEMPLATE = """
 @@@
 {config_json_code}
 @@@
+
+* changes_description.txt *:
+@@@
+{changes_description_txt_code}
+@@@
 """.strip()
 
 DEFAULT_PARSE_ERROR = "Could not parse code (maybe not present). If you have provided a new code for this file then, check on correct formatting and filenames! You can write only in those 10 files. (\"heat_map_train.py\", \"heat_map_inference.py\", \"config.json\", \"TSP.cpp\", and 6 .hpp's in the include/ folder)"
@@ -77,6 +82,7 @@ NAMES_TO_FILENAMES = {
     "additional_hpp_code": "include/additional.hpp",
     "TSP_cpp_code": "TSP.cpp",
     "config_json_code": "config.json",
+    "changes_description_txt_code": "changes_description.txt",
 }
 
 
@@ -92,6 +98,7 @@ def format_query_code(dir_path: str) -> str:
         additional_hpp_code=read_file(f"{dir_path}/include/additional.hpp"),
         TSP_cpp_code=read_file(f"{dir_path}/TSP.cpp"),
         config_json_code=read_file(f"{dir_path}/config.json"),
+        changes_description_txt_code=read_file(f"{dir_path}/changes_description.txt"),
     )
 
 
@@ -123,6 +130,7 @@ def parse_output_code(text: str) -> None:
         "additional_hpp_code": default_for_none(parse_code_block(text, "* include/additional.hpp *:"), DEFAULT_PARSE_ERROR),
         "TSP_cpp_code": default_for_none(parse_code_block(text, "* TSP.cpp *:"), DEFAULT_PARSE_ERROR),
         "config_json_code": default_for_none(parse_code_block(text, "* config.json *:"), DEFAULT_PARSE_ERROR),
+        "changes_description_txt_code": default_for_none(parse_code_block(text, "* changes_description.txt *:"), DEFAULT_PARSE_ERROR),
     }
 
 

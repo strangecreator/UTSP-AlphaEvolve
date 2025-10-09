@@ -34,7 +34,8 @@ using namespace std::chrono;
 //   `min_potential_to_consider`: minimum potential of an edge to consider it in simulation (look at the formula for potential to understand fully).
 //   `exploration_coefficient`: hyperparameter for exploration.
 //   `weight_delta_coefficient`: hyperparameter for updating the weights matrix.
-//   `sensitivity_temperature`: hyperparameter for controlling the weight decrease in unsuccessfull simulation depending on the length of a chain.
+//   `use_sensitivity_decrease`: whether to reduce weight flow for deep edges in unsuccessful k'opt search.
+//   `sensitivity_temperature`: hyperparameter for controlling the weight decrease in unsuccessful simulation depending on the length of a chain.
 //   `max_k_opt_simulations_without_improve_to_stop`: the number of MCTS simulations per restart.
 //   `restarts_number`: number of times algorithm restarts while maintaining the weights matrix (number of iterations).
 //   `distance_type`: "int32", "int64" or "double".
@@ -83,6 +84,17 @@ void read_input_data(const Config& config, Context& context) {
         for (int i = 0; i < config.cities_number * config.cities_number; ++i) {
             context.weight[i] = 0.0;
         }
+    }
+
+    // initializing total weight
+    for (int i = 0; i < config.cities_number; ++i) {
+        double total_weight = 0.0;
+
+        for (int j = 0; j < config.cities_number; ++j) {
+            total_weight += smooth_relu(context.weight[i * config.cities_number + j]);
+        }
+
+        context.total_weight[i] = total_weight;
     }
 
     // calculating candidates

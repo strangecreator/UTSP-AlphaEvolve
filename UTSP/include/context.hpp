@@ -31,6 +31,7 @@ struct Config {
     double min_potential_to_consider;
     double exploration_coefficient;
     double weight_delta_coefficient;
+    bool use_sensitivity_decrease;
     double sensitivity_temperature;
     int max_k_opt_simulations_without_improve_to_stop;
     int restarts_number;
@@ -57,6 +58,7 @@ struct Config {
         min_potential_to_consider = config["min_potential_to_consider"];
         exploration_coefficient = config["exploration_coefficient"];
         weight_delta_coefficient = config["weight_delta_coefficient"];
+        use_sensitivity_decrease = config["use_sensitivity_decrease"];
         sensitivity_temperature = config["sensitivity_temperature"];
         max_k_opt_simulations_without_improve_to_stop = config["max_k_opt_simulations_without_improve_to_stop"];
         restarts_number = config["restarts_number"];
@@ -118,6 +120,7 @@ struct Context {
     // weights
     double* heat_map = nullptr;
     double* weight = nullptr;
+    double* total_weight = nullptr;
     double* potential = nullptr;
 
     // candidates
@@ -125,6 +128,13 @@ struct Context {
 
     // local k opt search
     int* pairs = nullptr;
+    int* saved_pairs = nullptr;
+    int saved_depth = 0;
+
+    double current_best_delta_double = -inf_double;
+    int current_best_delta_int32 = -inf_int32;
+    long long current_best_delta_int64 = -inf_int64;
+
     long long* chosen_times = nullptr;
     long long total_simulations = 0;
 
@@ -170,11 +180,14 @@ struct Context {
             heat_map = new double[config.cities_number * config.cities_number];
         }
         weight = new double[config.cities_number * config.cities_number];
+        total_weight = new double[config.cities_number];
         potential = new double[config.cities_number * config.cities_number];
 
         candidates = new int[config.cities_number * config.candidates_number];
 
         pairs = new int[config.cities_number];  // because currently we have a random k opt depth change option
+        saved_pairs = new int[config.cities_number];
+
         chosen_times = new long long[config.cities_number * config.cities_number];
         for (int i = 0; i < config.cities_number * config.cities_number; ++i) {
             chosen_times[i] = 0;
@@ -201,11 +214,14 @@ struct Context {
 
         if (heat_map) { delete[] heat_map; }
         delete[] weight;
+        delete[] total_weight;
         delete[] potential;
 
         delete[] candidates;
 
         delete[] pairs;
+        delete[] saved_pairs;
+
         delete[] chosen_times;
 
         delete[] path;

@@ -23,6 +23,7 @@ from code_to_query import *
 
 SOLUTIONS_DIRECTORY = str(BASE_DIR / "temp/solutions")
 N = 200
+INSTANCES_COUNT = 64
 
 
 def calc_average_elapsed_time(time_elapsed: list[float | int | None]) -> float | None:
@@ -53,19 +54,24 @@ def build_artifacts_from_saver(artifacts: dict, metrics: dict, output_saver: dic
         artifacts["heat_map_train_stdout"] = output_saver["heat_map_train_data"]["stdout"]
         artifacts["heat_map_train_stderr"] = output_saver["heat_map_train_data"]["stderr"]
 
+        artifacts["heat_map_train_time_elapsed"] = output_saver["heat_map_train_data"]["time_elapsed"]
         metrics["heat_map_train_time_elapsed"] = output_saver["heat_map_train_data"]["time_elapsed"]
     
     if "heat_map_inference_data" in output_saver:
         artifacts["heat_map_inference_first_test_sample_stdout"] = output_saver["heat_map_inference_data"]["instance_stdout"]
         artifacts["heat_map_inference_first_test_sample_stderr"] = output_saver["heat_map_inference_data"]["instance_stderr"]
 
-        metrics["average_heat_map_inference_time_elapsed"] = calc_average_elapsed_time(output_saver["heat_map_inference_data"]["time_elapsed"])
+        average_heat_map_inference_time_elapsed = calc_average_elapsed_time(output_saver["heat_map_inference_data"]["time_elapsed"])
+        artifacts["average_heat_map_inference_time_elapsed"] = average_heat_map_inference_time_elapsed
+        metrics["average_heat_map_inference_time_elapsed"] = average_heat_map_inference_time_elapsed
     
     if "tsp_run_data" in output_saver:
         artifacts["tsp_run_first_test_sample_stdout"] = output_saver["tsp_run_data"]["instance_stdout"]
         artifacts["tsp_run_first_test_sample_stderr"] = output_saver["tsp_run_data"]["instance_stderr"]
 
-        metrics["average_tsp_run_time_elapsed"] = calc_average_elapsed_time(output_saver["tsp_run_data"]["time_elapsed"])
+        average_tsp_run_time_elapsed = calc_average_elapsed_time(output_saver["tsp_run_data"]["time_elapsed"])
+        artifacts["average_tsp_run_time_elapsed"] = average_tsp_run_time_elapsed
+        metrics["average_tsp_run_time_elapsed"] = average_tsp_run_time_elapsed
     
     return artifacts
 
@@ -168,7 +174,7 @@ def evaluate(program_path: str) -> dict:
     # testing pipeline
     try:
         # loading cities
-        cities = load_points(N, split="test", instances_count=64)
+        cities = load_points(N, split="test", instances_count=INSTANCES_COUNT)
 
         # running
         try:
@@ -217,6 +223,9 @@ def evaluate(program_path: str) -> dict:
         metrics["average_path_length"] = float(total_distances.mean())
         metrics["path_length_variance"] = float(np.var(total_distances))
         metrics["combined_score"] = calc_combined_score(cities.shape[1], total_distances, output_saver["tsp_run_data"]["time_elapsed"], h=1.0, w=1.0)
+
+        artifacts["average_path_length"] = metrics["average_path_length"]
+        artifacts["path_length_variance"] = metrics["path_length_variance"]
 
         # returning results
         return EvaluationResult(metrics=metrics, artifacts=artifacts)

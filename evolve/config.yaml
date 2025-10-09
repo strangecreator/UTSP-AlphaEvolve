@@ -27,6 +27,8 @@ prompt:
 
     Your task is to explore a new method or improvement that surpasses the current implementations in terms of the combined score, defined as a function of the average Hamiltonian cycle length and the average time required to produce a solution.
 
+    It seems that implementation that uses double type to calc distances is quite slow (in comparison with int32 and int64).
+
     Do not modify the `cities_number` in config.json, as it will be automatically replaced with the appropriate value during testing. Also, do not modify the `input_path` or `output_path` parameters. All other parameters may be edited.
     Additional information: all test cities were randomly generated within the square [0, 1] × [0, 1] (as is standard in most papers). The number of test samples in a testing batch ranges from 32 to 128, depending on the value of cities_number.
 
@@ -40,11 +42,13 @@ prompt:
     The C++ program is implemented in a way that supports double, int32 (int) and int64 (long long) distance calculations that is specified in runtime in config.json (that you can change).
 
     You can — and probably should — write something to stdout for yourself. This stdout output will be shown to you in future calls.
+
+    Important: Describe your changes and write them to the changes_description.txt file (deleting the previous one beforehand).
   
   include_artifacts: true
-  max_full_program_blocks: 1
-  num_top_programs: 0
-  num_diverse_programs: 0
+  include_only_text_changes: true
+  num_top_programs: 3
+  num_diverse_programs: 2
   suggest_simplification_after_chars: 60000
   concise_implementation_max_lines: 1000
   comprehensive_implementation_min_lines: 5000

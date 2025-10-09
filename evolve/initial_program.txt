@@ -83,6 +83,9 @@ if __name__ == "__main__":
 #include <numeric>
 #include <algorithm>
 
+// other imports
+#include "context.hpp"
+
 
 constexpr double BHH_CONSTANT_2D = 0.7120;  // Beardwood–Halton–Hammersley (BHH) constant
 
@@ -108,6 +111,11 @@ long long int64_sqrt(long long value) {
         }
     }
     return floor_root;
+}
+
+double smooth_relu(double x) {
+    if (x < 0) { return pow(e, x); }
+    return x + 1.0;
 }
 
 
@@ -190,6 +198,18 @@ void calc_and_save_total_distance(const Config& config, Context& context) {
 }
 
 
+void update_weight_undirected(const Config& config, Context& context, int i, int j, double weight_delta) {
+    context.total_weight[i] -= smooth_relu(context.weight[i * config.cities_number + j]);
+    context.total_weight[j] -= smooth_relu(context.weight[j * config.cities_number + i]);
+
+    context.weight[i * config.cities_number + j] += weight_delta;
+    context.weight[j * config.cities_number + i] += weight_delta;
+
+    context.total_weight[i] += smooth_relu(context.weight[i * config.cities_number + j]);
+    context.total_weight[j] += smooth_relu(context.weight[j * config.cities_number + i]);
+}
+
+
 void identify_candidates_for_each_node(const Config& config, Context& context, const double* metric, bool is_reversed) {
 	for (int i = 0; i < config.cities_number; ++i) {
         std::iota(context.buffer.begin(), context.buffer.end(), 0);  // just a simple range(0, n), vector should be filled to use std::iota
@@ -230,7 +250,7 @@ void reverse_sub_path(Context& context, int i, int j) {
 }
 
 
-double expected_tsp_length_2d(long long n, double width, double height) {
+double expected_optimal_tsp_length_2d(long long n, double width, double height) {
     if (n <= 1 || width <= 0.0 || height <= 0.0) {
         return 0.0;
     }
@@ -276,6 +296,7 @@ struct Config {
     double min_potential_to_consider;
     double exploration_coefficient;
     double weight_delta_coefficient;
+    bool use_sensitivity_decrease;
     double sensitivity_temperature;
     int max_k_opt_simulations_without_improve_to_stop;
     int restarts_number;
@@ -302,6 +323,7 @@ struct Config {
         min_potential_to_consider = config["min_potential_to_consider"];
         exploration_coefficient = config["exploration_coefficient"];
         weight_delta_coefficient = config["weight_delta_coefficient"];
+        use_sensitivity_decrease = config["use_sensitivity_decrease"];
         sensitivity_temperature = config["sensitivity_temperature"];
         max_k_opt_simulations_without_improve_to_stop = config["max_k_opt_simulations_without_improve_to_stop"];
         restarts_number = config["restarts_number"];
@@ -363,6 +385,7 @@ struct Context {
     // weights
     double* heat_map = nullptr;
     double* weight = nullptr;
+    double* total_weight = nullptr;
     double* potential = nullptr;
 
     // candidates
@@ -370,6 +393,13 @@ struct Context {
 
     // local k opt search
     int* pairs = nullptr;
+    int* saved_pairs = nullptr;
+    int saved_depth = 0;
+
+    double current_best_delta_double = -inf_double;
+    int current_best_delta_int32 = -inf_int32;
+    long long current_best_delta_int64 = -inf_int64;
+
     long long* chosen_times = nullptr;
     long long total_simulations = 0;
 
@@ -415,11 +445,14 @@ struct Context {
             heat_map = new double[config.cities_number * config.cities_number];
         }
         weight = new double[config.cities_number * config.cities_number];
+        total_weight = new double[config.cities_number];
         potential = new double[config.cities_number * config.cities_number];
 
         candidates = new int[config.cities_number * config.candidates_number];
 
         pairs = new int[config.cities_number];  // because currently we have a random k opt depth change option
+        saved_pairs = new int[config.cities_number];
+
         chosen_times = new long long[config.cities_number * config.cities_number];
         for (int i = 0; i < config.cities_number * config.cities_number; ++i) {
             chosen_times[i] = 0;
@@ -446,11 +479,14 @@ struct Context {
 
         if (heat_map) { delete[] heat_map; }
         delete[] weight;
+        delete[] total_weight;
         delete[] potential;
 
         delete[] candidates;
 
         delete[] pairs;
+        delete[] saved_pairs;
+
         delete[] chosen_times;
 
         delete[] path;
@@ -598,10 +634,8 @@ bool apply_2_opt_move(const Config& config, Context& context, int i, int j) {
         context.path[j_next].prev = i_next;
 
         // updating weights
-        context.weight[i * config.cities_number + j] += weight_increase;
-        context.weight[j * config.cities_number + i] += weight_increase;
-        context.weight[i_next * config.cities_number + j_next] += weight_increase;
-        context.weight[j_next * config.cities_number + i_next] += weight_increase;
+        update_weight_undirected(config, context, i, j, weight_increase);
+        update_weight_undirected(config, context, i_next, j_next, weight_increase);
 
         return true;
     }
@@ -644,13 +678,11 @@ void calc_potential_inplace(const Config& config, Context& context, int i, int j
         return;
     }
 
+    // calculating total weight
+    double average_weight = context.total_weight[i] / (config.cities_number - 1);
     double weight = context.weight[i * config.cities_number + j];
 
-    // this forms a smooth ReLU function
-    if (weight < 0) { weight = pow(e, weight); }
-    else { weight += 1.0; }
-
-    context.potential[i * config.cities_number + j] = weight + config.exploration_coefficient * sqrt(log(context.total_simulations + 1) / (context.chosen_times[i * config.cities_number + j] + 1));  // always a positive value
+    context.potential[i * config.cities_number + j] = (smooth_relu(weight) / average_weight) + config.exploration_coefficient * sqrt(log(context.total_simulations + 1) / (context.chosen_times[i * config.cities_number + j] + 1));  // always a positive value
 }
 
 int get_candidate_proportionally_by_potential(const Config& config, Context& context, int current_city, int start_city) {
@@ -661,6 +693,8 @@ int get_candidate_proportionally_by_potential(const Config& config, Context& con
 
 	for (int i = 0; i < config.candidates_number; ++i) {
         int candidate = context.candidates[current_city * config.candidates_number + i];
+
+        calc_potential_inplace(config, context, current_city, candidate);
         double potential = context.potential[current_city * config.cities_number + candidate];
 
         if (candidate == next_city || candidate == start_city || (potential < config.min_potential_to_consider)) { continue; }  // not available
@@ -698,6 +732,9 @@ bool apply_k_opt_move(const Config& config, Context& context, int start_city, in
     context.pairs[1] = next_to_start_city;
     int depth = 1;
 
+    int copied_to_saved_pairs = 0;
+    bool need_copy_to_saved_pairs = false;
+
     // breaking an edge of the first pair
     context.path[start_city].next = null;
     context.path[next_to_start_city].prev = null;
@@ -718,7 +755,6 @@ bool apply_k_opt_move(const Config& config, Context& context, int start_city, in
     }
 
     bool apply_move = false;
-    double weight_increase = 0.0;
 
     int current_city = next_to_start_city;
 
@@ -748,34 +784,52 @@ bool apply_k_opt_move(const Config& config, Context& context, int start_city, in
             gain_double += get_distance_double(config, context, proposed_city_link, proposed_city) - get_distance_double(config, context, current_city, proposed_city);
             gain_double_with_closure = gain_double - get_distance_double(config, context, start_city, proposed_city_link);
 
-            weight_increase = config.weight_delta_coefficient * (pow(e, gain_double_with_closure / context.path_distance_double) - 1);
-
             if (gain_double_with_closure > 0.0) {
                 apply_move = true;
                 context.path_distance_double -= gain_double_with_closure;
+            }
+            if (context.current_best_delta_double < gain_double_with_closure) {
+                need_copy_to_saved_pairs = true;
+                context.current_best_delta_double = gain_double_with_closure;
             }
         }
         if (config.distance_type == DistanceType::Int32) {
             gain_int32 += get_distance_int32(config, context, proposed_city_link, proposed_city) - get_distance_int32(config, context, current_city, proposed_city);
             gain_int32_with_closure = gain_int32 - get_distance_int32(config, context, start_city, proposed_city_link);
 
-            weight_increase = config.weight_delta_coefficient * (pow(e, static_cast<double>(gain_int32_with_closure) / context.path_distance_int32) - 1);
-
             if (gain_int32_with_closure > 0) {
                 apply_move = true;
                 context.path_distance_int32 -= gain_int32_with_closure;
+            }
+            if (context.current_best_delta_int32 < gain_int32_with_closure) {
+                need_copy_to_saved_pairs = true;
+                context.current_best_delta_int32 = gain_int32_with_closure;
             }
         }
         if (config.distance_type == DistanceType::Int64) {
             gain_int64 += get_distance_int64(config, context, proposed_city_link, proposed_city) - get_distance_int64(config, context, current_city, proposed_city);
             gain_int64_with_closure = gain_int64 - get_distance_int64(config, context, start_city, proposed_city_link);
 
-            weight_increase = config.weight_delta_coefficient * (pow(e, static_cast<double>(gain_int64_with_closure) / context.path_distance_int64) - 1);
-
             if (gain_int64_with_closure > 0) {
                 apply_move = true;
                 context.path_distance_int64 -= gain_int64_with_closure;
             }
+            if (context.current_best_delta_int64 < gain_int64_with_closure) {
+                need_copy_to_saved_pairs = true;
+                context.current_best_delta_int64 = gain_int64_with_closure;
+            }
+        }
+
+        if (need_copy_to_saved_pairs) {  // for future weight updating
+            for (int i = copied_to_saved_pairs; i < depth; ++i) {
+                context.saved_pairs[2 * i] = context.pairs[2 * i];
+                context.saved_pairs[2 * i + 1] = context.pairs[2 * i + 1];
+            }
+
+            copied_to_saved_pairs = depth;
+            context.saved_depth = depth;
+
+            need_copy_to_saved_pairs = false;
         }
 
         if (apply_move) { break; }
@@ -783,22 +837,8 @@ bool apply_k_opt_move(const Config& config, Context& context, int start_city, in
         current_city = proposed_city_link;
     }
 
-    // updating weights
-    for (int i = 0; i < depth; ++i) {
-        int current_city = context.pairs[2 * i];
-        int proposed_city = (i < depth - 1) ? context.pairs[2 * i + 2] : start_city;
-
-        double factor = 1.0;
-        if (!apply_move) {
-            // exponential decrease in sensitivity
-            factor = pow(e, -i / config.sensitivity_temperature);
-        }
-
-        context.weight[current_city * config.cities_number + proposed_city] += weight_increase * factor;
-        context.weight[proposed_city * config.cities_number + current_city] += weight_increase * factor;
-    }
-
     if (apply_move) {
+        // concluding the path to cycle
         int end_city = context.pairs[2 * depth - 1];
 
         context.path[start_city].next = end_city;
@@ -811,26 +851,69 @@ bool apply_k_opt_move(const Config& config, Context& context, int start_city, in
 
 
 bool improve_by_k_opt_move(const Config& config, Context& context, int max_k_opt_depth) {
+    context.current_best_delta_double = -inf_double;
+    context.current_best_delta_int32 = -inf_int32;
+    context.current_best_delta_int64 = -inf_int64;
+
+    // saving current path length
+    double saved_path_distance_double = context.path_distance_double;
+    double saved_path_distance_int32 = context.path_distance_int32;
+    double saved_path_distance_int64 = context.path_distance_int64;
+
+    bool improved = false;
+
     for (int i = 0; i < config.max_k_opt_simulations_without_improve_to_stop; ++i) {
         // saving current path
         convert_path_to_solution(config, context);
 
         int start_city = get_random_int_by_module(config.cities_number);
-        if (apply_k_opt_move(config, context, start_city, max_k_opt_depth)) { return true; }
+        if (apply_k_opt_move(config, context, start_city, max_k_opt_depth)) {
+            improved = true;
+            break;
+        }
 
         // restoring the path that was before the move
         convert_solution_to_path(config, context);
     }
 
-    return false;
+    // updating weights from the best delta (it can be negative, if we've not improved)
+    double weight_delta = 0.0;
+    if (config.distance_type == DistanceType::Double && context.current_best_delta_double != -inf_double) {
+        weight_delta = config.weight_delta_coefficient * (pow(e, context.current_best_delta_double / saved_path_distance_double) - 1);
+    }
+    if (config.distance_type == DistanceType::Int32 && context.current_best_delta_int32 != -inf_int32) {
+        weight_delta = config.weight_delta_coefficient * (pow(e, static_cast<double>(context.current_best_delta_int32) / saved_path_distance_int32) - 1);
+    }
+    if (config.distance_type == DistanceType::Int64 && context.current_best_delta_int64 != -inf_int64) {
+        weight_delta = config.weight_delta_coefficient * (pow(e, static_cast<double>(context.current_best_delta_int64) / saved_path_distance_int64) - 1);
+    }
+
+    for (int i = 0; i < context.saved_depth; ++i) {
+        int current_city = context.saved_pairs[2 * i];
+        int proposed_city = (i < context.saved_depth - 1) ? context.saved_pairs[2 * i + 2] : context.saved_pairs[0];
+
+        double factor = 1.0;
+        if (config.use_sensitivity_decrease && !improved) {
+            // exponential decrease in sensitivity
+            factor = pow(e, -i / config.sensitivity_temperature);
+        }
+
+        update_weight_undirected(config, context, current_city, proposed_city, weight_delta * factor);
+    }
+
+    return improved;
 }
 
-int local_k_opt_search(const Config& config, Context& context, int max_k_opt_depth) {
-    // calculating current potentials for each edge
+int local_k_opt_search(const Config& config, Context& context, int max_k_opt_depth) {  
+    // calculating total weight (for mitigating precision based errors, that was found empirically)
     for (int i = 0; i < config.cities_number; ++i) {
+        double total_weight = 0.0;
+
         for (int j = 0; j < config.cities_number; ++j) {
-            calc_potential_inplace(config, context, i, j);
+            total_weight += smooth_relu(context.weight[i * config.cities_number + j]);
         }
+
+        context.total_weight[i] = total_weight;
     }
 
     // running simulations and trying to improve
@@ -888,7 +971,8 @@ using namespace std::chrono;
 //   `min_potential_to_consider`: minimum potential of an edge to consider it in simulation (look at the formula for potential to understand fully).
 //   `exploration_coefficient`: hyperparameter for exploration.
 //   `weight_delta_coefficient`: hyperparameter for updating the weights matrix.
-//   `sensitivity_temperature`: hyperparameter for controlling the weight decrease in unsuccessfull simulation depending on the length of a chain.
+//   `use_sensitivity_decrease`: whether to reduce weight flow for deep edges in unsuccessful k'opt search.
+//   `sensitivity_temperature`: hyperparameter for controlling the weight decrease in unsuccessful simulation depending on the length of a chain.
 //   `max_k_opt_simulations_without_improve_to_stop`: the number of MCTS simulations per restart.
 //   `restarts_number`: number of times algorithm restarts while maintaining the weights matrix (number of iterations).
 //   `distance_type`: "int32", "int64" or "double".
@@ -937,6 +1021,17 @@ void read_input_data(const Config& config, Context& context) {
         for (int i = 0; i < config.cities_number * config.cities_number; ++i) {
             context.weight[i] = 0.0;
         }
+    }
+
+    // initializing total weight
+    for (int i = 0; i < config.cities_number; ++i) {
+        double total_weight = 0.0;
+
+        for (int j = 0; j < config.cities_number; ++j) {
+            total_weight += smooth_relu(context.weight[i * config.cities_number + j]);
+        }
+
+        context.total_weight[i] = total_weight;
     }
 
     // calculating candidates
@@ -1062,20 +1157,27 @@ int main(int argc, char** argv) {
 @@@
 {
     "cities_number": 200,
-    "input_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/sample_input.txt",
-    "output_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/UTSP/sample_output.txt",
-    "use_heat_map_as_initial_weights": true,
+    "input_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/repo/src/local_search_v2/input.txt",
+    "output_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/repo/src/local_search_v2/output.txt",
+    "use_heat_map_as_initial_weights": false,
     "candidates_source": "knn",
     "candidates_number": 10,
     "max_k_opt_depth": 89,
     "random_k_opt_depth_after_first_iteration": true,
-    "min_potential_to_consider": 0.0,
+    "min_potential_to_consider": 1.0,
     "exploration_coefficient": 0.0,
     "weight_delta_coefficient": 10.0,
+    "use_sensitivity_decrease": false,
     "sensitivity_temperature": 1.0,
     "max_k_opt_simulations_without_improve_to_stop": 200,
-    "restarts_number": 750,
-    "distance_type": "int64",
+    "restarts_number": 1000,
+    "distance_type": "int32",
     "magnify_rate": 1000000
 }
+@@@
+
+* changes_description.txt *:
+@@@
+Default workflow from the paper "UTSP" implementing 2'opt and k'opt searches.
+No further changes.
 @@@

@@ -53,10 +53,8 @@ bool apply_2_opt_move(const Config& config, Context& context, int i, int j) {
         context.path[j_next].prev = i_next;
 
         // updating weights
-        context.weight[i * config.cities_number + j] += weight_increase;
-        context.weight[j * config.cities_number + i] += weight_increase;
-        context.weight[i_next * config.cities_number + j_next] += weight_increase;
-        context.weight[j_next * config.cities_number + i_next] += weight_increase;
+        update_weight_undirected(config, context, i, j, weight_increase);
+        update_weight_undirected(config, context, i_next, j_next, weight_increase);
 
         return true;
     }

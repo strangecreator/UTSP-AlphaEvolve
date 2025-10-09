@@ -209,14 +209,8 @@ class PromptConfig:
     num_top_programs: int = 3
     num_diverse_programs: int = 2
 
-    # HARD CAP on total *full-code* program blocks in the prompt (top + diverse + inspirations)
-    # If None, legacy behavior (no global cap; section-level limits apply).
-    max_full_program_blocks: Optional[int] = None
-
-    # Section toggles (so you can kill entire sections without touching templates)
-    include_previous_attempts_in_prompt: bool = True
-    include_diverse_programs_in_prompt: bool = True
-    include_inspirations_in_prompt: bool = True
+    # Whether to include only text changes from the program (* changes_description.txt *)
+    include_only_text_changes: bool = False
 
     # Template stochasticity
     use_template_stochasticity: bool = True

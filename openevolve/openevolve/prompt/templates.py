@@ -141,7 +141,7 @@ EVALUATION_TEMPLATE = """Evaluate the following code on a scale of 0.0 to 1.0 fo
 For each metric, provide a score between 0.0 and 1.0, where 1.0 is best.
 
 Code to evaluate:
-```python
+```
 {current_program}
 ```
 

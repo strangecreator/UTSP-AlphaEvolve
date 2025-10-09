@@ -104,7 +104,7 @@ def run(
 if __name__ == "__main__":
     result = run(
         str(BASE_DIR / "UTSP"),
-        load_points(200, "test"),
+        load_points(200, "test")[:1],
         heat_map_train_timeout=360.0,
         heat_map_inference_timeout=60.0,
         tsp_compilation_timeout=10.0,
