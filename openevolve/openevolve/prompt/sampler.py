@@ -358,7 +358,7 @@ class PromptSampler:
                 top_program_template.format(
                     program_number=i + 1,
                     score=f"{score:.4f}",
-                    language=language,
+                    language=language if not self.config.include_only_text_changes else '',
                     program_snippet=program_code,
                     key_features=key_features_str,
                 )
@@ -408,7 +408,7 @@ class PromptSampler:
                         top_program_template.format(
                             program_number=f"D{i + 1}",
                             score=f"{score:.4f}",
-                            language=language,
+                            language=language if not self.config.include_only_text_changes else '',
                             program_snippet=program_code,
                             key_features=key_features_str,
                         )
@@ -459,6 +459,9 @@ class PromptSampler:
             # Use the full program code
             program_code = program.get("code", "")
 
+            if self.config.include_only_text_changes:
+                program_code = retrieve_text_changes(program_code)
+
             # Calculate fitness score (prefers combined_score, excludes feature dimensions)
             score = get_fitness_score(program.get("metrics", {}), feature_dimensions or [])
 
@@ -473,7 +476,7 @@ class PromptSampler:
                     program_number=i + 1,
                     score=f"{score:.4f}",
                     program_type=program_type,
-                    language=language,
+                    language=language if not self.config.include_only_text_changes else '',
                     program_snippet=program_code,
                     unique_features=unique_features,
                 )

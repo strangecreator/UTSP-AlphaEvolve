@@ -22,8 +22,8 @@ from code_to_query import *
 
 
 SOLUTIONS_DIRECTORY = str(BASE_DIR / "temp/solutions")
-N = 200
-INSTANCES_COUNT = 64
+N = 500
+INSTANCES_COUNT = 32
 
 
 def calc_average_elapsed_time(time_elapsed: list[float | int | None]) -> float | None:
@@ -184,7 +184,7 @@ def evaluate(program_path: str) -> dict:
                 heat_map_train_timeout=360.0,
                 heat_map_inference_timeout=60.0,
                 tsp_compilation_timeout=10.0,
-                tsp_run_timeout=60.0,
+                tsp_run_timeout=120.0,
                 verbose=False,
                 output_saver=output_saver,
             )

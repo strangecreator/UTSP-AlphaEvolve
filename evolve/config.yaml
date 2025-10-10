@@ -25,7 +25,8 @@ prompt:
 
     However, a later paper (2025) questions the effectiveness of the heat map, showing that 2-opt and k-opt searches perform comparably well—even without it—achieving similar or better solution quality and faster runtime. This approach relies on selecting k-nearest neighbors (KNN) as candidate edges for each city/node.
 
-    Your task is to explore a new method or improvement that surpasses the current implementations in terms of the combined score, defined as a function of the average Hamiltonian cycle length and the average time required to produce a solution.
+    Your task is to explore a new method or improvement that surpasses the current implementations in terms of the combined score, defined as a function of the average Hamiltonian cycle length and the average time required to produce a solution. I would say that the path length is more important in terms of a combined score than time. For N=500, the average path length should be about 16.5
+    You can use up to 120 seconds of C++ compute (so, maybe it is better to increase `restarts_number` first with new algorithm, and then improve time if needed).
 
     It seems that implementation that uses double type to calc distances is quite slow (in comparison with int32 and int64, that is why the initial program contains implementation in 3 types).
 
@@ -36,7 +37,7 @@ prompt:
       Heat map train: 360 seconds.
       Heat map inference: 60 seconds per instance.
       TSP compilation: 10 seconds.
-      TSP run: 60 seconds per instance.
+      TSP run: 120 seconds per instance.
     
     The C++ program will be compiled using C++ 17 standart. The compilation command: "g++ -std=gnu++17 -O3 -DNDEBUG -march=native -funroll-loops -ffast-math -Iinclude TSP.cpp -o bin/runner -lpthread -lm -ldl" (may slightly vary depending on the operation system)
     The C++ program is implemented in a way that supports double, int32 (int) and int64 (long long) distance calculations that is specified in runtime in config.json (that you can change).

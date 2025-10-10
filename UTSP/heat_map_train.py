@@ -9,13 +9,14 @@ import torch
 
 # You can train graph neural networks here (actually you can edit the whole file).
 # Save them in str(BASE_DIR / "pretrained") directory and use them in `heat_map_inference.py`.
-# But mind the training time, it should not exceed 5 minutes (python3.11, ubuntu 22.04, nvidia A100 40 GB GPU).
+# But mind the training time, it should not exceed 6 minutes (python3.11, ubuntu 22.04, nvidia A100 40 GB GPU).
 
 # In the original UTSP paper the heat map matrix is used, but upon the closer look on the authors code, they did not use it (they used simple K nearest neighbours as candidates).
 # So, the SOTA metrics were achieved without a heat map matrix, but maybe GNN approach is not wrong by its nature, maybe if trained properly it can help 2'opt and k'opt algorithms to find the best solution faster.
 # Maybe it is better to just improve the c++ code and not try the heat map approach.
 
 # Possible GNN step (just in case, implement if you like, you can skip this if think it is not effective): hamiltonian cycle constraint, loss on exact 2 degree for each node, etc.
+# UPDATE: currently, it is not supported to train heat maps, leave this code part untouched.
 
 
 if __name__ == "__main__":

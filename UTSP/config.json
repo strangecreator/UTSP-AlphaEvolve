@@ -1,5 +1,5 @@
 {
-    "cities_number": 200,
+    "cities_number": 500,
     "input_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/repo/src/local_search_v2/input.txt",
     "output_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/repo/src/local_search_v2/output.txt",
     "use_heat_map_as_initial_weights": false,
@@ -13,7 +13,7 @@
     "use_sensitivity_decrease": false,
     "sensitivity_temperature": 1.0,
     "max_k_opt_simulations_without_improve_to_stop": 200,
-    "restarts_number": 1000,
+    "restarts_number": 500,
     "distance_type": "int32",
     "magnify_rate": 1000000
 }
