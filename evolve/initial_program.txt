@@ -15,10 +15,8 @@ import torch
 
 # In the original UTSP paper the heat map matrix is used, but upon the closer look on the authors code, they did not use it (they used simple K nearest neighbours as candidates).
 # So, the SOTA metrics were achieved without a heat map matrix, but maybe GNN approach is not wrong by its nature, maybe if trained properly it can help 2'opt and k'opt algorithms to find the best solution faster.
-# Maybe it is better to just improve the c++ code and not try the heat map approach.
 
-# Possible GNN step (just in case, implement if you like, you can skip this if think it is not effective): hamiltonian cycle constraint, loss on exact 2 degree for each node, etc.
-# UPDATE: currently, it is not supported to train heat maps, leave this code part untouched.
+# Possible GNN step (just in case, implement if you like): hamiltonian cycle constraint, loss on exact 2 degree for each node, etc.
 
 
 if __name__ == "__main__":
@@ -1157,7 +1155,7 @@ int main(int argc, char** argv) {
 * config.json *:
 @@@
 {
-    "cities_number": 500,
+    "cities_number": 1000,
     "input_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/repo/src/local_search_v2/input.txt",
     "output_path": "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/repo/src/local_search_v2/output.txt",
     "use_heat_map_as_initial_weights": false,
@@ -1170,9 +1168,9 @@ int main(int argc, char** argv) {
     "weight_delta_coefficient": 10.0,
     "use_sensitivity_decrease": false,
     "sensitivity_temperature": 1.0,
-    "max_k_opt_simulations_without_improve_to_stop": 200,
-    "restarts_number": 500,
-    "distance_type": "int32",
+    "max_k_opt_simulations_without_improve_to_stop": 100,
+    "restarts_number": 200,
+    "distance_type": "int64",
     "magnify_rate": 1000000
 }
 @@@

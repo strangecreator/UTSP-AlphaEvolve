@@ -1,5 +1,6 @@
 import os
 import math
+import shutil
 import pathlib
 import typing as tp
 import concurrent.futures
@@ -22,6 +23,18 @@ def default_for_none(value: tp.Any, default: tp.Any) -> tp.Any:
 
 def create_dir(dir_path: str) -> None:
     os.makedirs(dir_path, exist_ok=True)
+
+
+def remove_dir(dir_path: str) -> None:
+    p = pathlib.Path(dir_path)
+
+    if not p.exists():
+        return
+
+    if not p.is_dir():
+        raise NotADirectoryError(f"{dir_path} is not a directory")
+
+    shutil.rmtree(p)
 
 
 def touch_file(file_path: str) -> None:
@@ -201,5 +214,5 @@ def calc_total_cycle_distance(cities: np.ndarray, solutions: list[np.ndarray] | 
 
 
 if __name__ == "__main__":
-    print(approximation_using_BHH_constant(200))  # for a unit square
-    print(expected_random_cycle_length(200, 1, 1))  # for a unit square
+    print(approximation_using_BHH_constant(1000))  # for a unit square
+    # print(expected_random_cycle_length(200, 1, 1))  # for a unit square

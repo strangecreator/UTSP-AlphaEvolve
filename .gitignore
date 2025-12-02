@@ -1,1 +1,8 @@
 temp
+evolve/logs
+evolve/openevolve*
+*pycache*
+evolve/test.py
+evolve/test.txt
+evolve/artifacts
+best_programs

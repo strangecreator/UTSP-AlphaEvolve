@@ -327,6 +327,12 @@ class EvaluatorConfig:
     enable_artifacts: bool = True
     max_artifact_storage: int = 100 * 1024 * 1024  # 100MB per program
 
+    # If True, and the worker detects that changes_description.txt:
+    #   - cannot be parsed from the child program, OR
+    #   - is identical to the parent's changes_description.txt,
+    # then the child program is discarded and never added to the database.
+    discard_if_text_changes_fail: bool = False
+
 
 @dataclass
 class EvolutionTraceConfig:

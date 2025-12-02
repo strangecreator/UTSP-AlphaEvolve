@@ -51,3 +51,4 @@ IMPORTANT:
 * Do not rewrite the entire program - focus on targeted improvements.
 * Provide "<<<<<<< SEARCH", "=======" and ">>>>>>> REPLACE" blocks inside a triple code quotes ``` ``` for proper whitespace handling and parsing.
 * Mind the "<<<<<<<", "=======" and ">>>>>>>" as they are crucial for parsing.
+* Do not forget to provide SEARCH, REPLACE blocks for the "changes_description.txt"! Without it all your changes will be discarded!

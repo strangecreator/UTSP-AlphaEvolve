@@ -1,19 +1,19 @@
 # Configuration
-max_iterations: 100
+max_iterations: 10000
 random_seed: 42
 checkpoint_interval: 1
-log_level: "DEBUG"
+log_level: "INFO"
 
 # LLM configuration
 llm:
-  manual_mode: true
-  manual_queue_dir: "/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/temp/manual_queue"
-  primary_model: "gpt-5"
+  manual_mode: false
+  manual_queue_dir: "/workspace/dataspace/alpha_evolve/UTSP-AlphaEvolve/temp/manual_queue"
+  primary_model: "deepseek-reasoner"
   primary_model_weight: 1.0
-  api_base: "https://api.openai.com/v1"
-  api_key: "<some-key>"
-  temperature: 0.7
-  max_tokens: 100000
+  api_base: "https://api.deepseek.com"
+  api_key: "sk-fc8055a0ef384b65ab78859fdd8b6323"
+  temperature: 0.5
+  max_tokens: 64000
   timeout: null
 
 # Prompt configuration
@@ -25,26 +25,29 @@ prompt:
 
     However, a later paper (2025) questions the effectiveness of the heat map, showing that 2-opt and k-opt searches perform comparably well—even without it—achieving similar or better solution quality and faster runtime. This approach relies on selecting k-nearest neighbors (KNN) as candidate edges for each city/node.
 
-    Your task is to explore a new method or improvement that surpasses the current implementations in terms of the combined score, defined as a function of the average Hamiltonian cycle length and the average time required to produce a solution. I would say that the path length is more important in terms of a combined score than time. For N=500, the average path length should be about 16.5
-    You can use up to 120 seconds of C++ compute (so, maybe it is better to increase `restarts_number` first with new algorithm, and then improve time if needed).
+    Your task is to explore a new method or improvement that surpasses the current implementations in terms of the combined score, defined as a function of the average Hamiltonian cycle length and the average time required to produce a solution. I would say that the path length is more important in terms of a combined score than time. For N=1000, the average path length should be about 23.1
+    You can use up to 160 seconds of C++ compute (so, maybe it is better to increase `restarts_number` first with new algorithm, and then improve time if needed).
 
     It seems that implementation that uses double type to calc distances is quite slow (in comparison with int32 and int64, that is why the initial program contains implementation in 3 types).
 
-    Do not modify the `cities_number` in config.json, as it will be automatically replaced with the appropriate value during testing. Also, do not modify the `input_path` or `output_path` parameters. All other parameters may be edited.
-    Additional information: all test cities were randomly generated within the square [0, 1] × [0, 1] (as is standard in most papers). The number of test samples in a testing batch ranges from 32 to 128, depending on the value of cities_number.
+    Do not modify the `cities_number` in config.json, as it will be automatically replaced with the appropriate value (1000) during testing. Also, do not modify the `input_path` or `output_path` parameters. All other parameters may be edited.
+    Additional information: all test cities were randomly generated within the square [0, 1] × [0, 1] (as is standard in most papers). The number of test samples in a testing batch ranges is 48 (12 cpu cores x 4 launches).
 
     Timeouts (error if exceeds):
-      Heat map train: 360 seconds.
+      Heat map train: 480 seconds.
       Heat map inference: 60 seconds per instance.
       TSP compilation: 10 seconds.
-      TSP run: 120 seconds per instance.
+      TSP run: 160 seconds per instance (as in the SOTA 2024 paper for N=1000).
+    
+    If training heat map, do not forget to clean GPU (cuda:0) entirely before starting training procedure. Environment characteristics: python3.11, ubuntu 22.04, nvidia A100 40 GB GPU.
     
     The C++ program will be compiled using C++ 17 standart. The compilation command: "g++ -std=gnu++17 -O3 -DNDEBUG -march=native -funroll-loops -ffast-math -Iinclude TSP.cpp -o bin/runner -lpthread -lm -ldl" (may slightly vary depending on the operation system)
     The C++ program is implemented in a way that supports double, int32 (int) and int64 (long long) distance calculations that is specified in runtime in config.json (that you can change).
 
     You can — and probably should — write something to stdout for yourself. This stdout output will be shown to you in future calls.
 
-    Important: Describe your changes and write them to the changes_description.txt file (deleting the previous one beforehand).
+    Important: Describe your changes, new methods and write them to the changes_description.txt file (replacing the previous description beforehand, as usual, using SEARCH & REPLACE blocks). Without this step, all proposed changes will be discarded because our evolution algorithm depends on it.
+    It is recommended to write the description in plain language (with a numbered list of changes, not long and without complex symbols), since a different LLM model (or even you, later) will need to replace this text in future calls.
   
   include_artifacts: true
   include_only_text_changes: true
@@ -56,8 +59,9 @@ prompt:
 
 # Database configuration
 database:
-  population_size: 50
-  archive_size: 20
+  db_path: "/workspace/dataspace/alpha_evolve/UTSP-AlphaEvolve/openevolve_output"
+  population_size: 100
+  archive_size: 40
   num_islands: 3
   elite_selection_ratio: 0.2
   exploitation_ratio: 0.7
@@ -66,8 +70,9 @@ database:
 evaluator:
   timeout: 1500
   cascade_evaluation: false
-  parallel_evaluations: 2
+  parallel_evaluations: 3
+  discard_if_text_changes_fail: true
 
 # Evolution settings
 diff_based_evolution: true
-max_code_length: 100000
+max_code_length: 150000

@@ -46,20 +46,27 @@ if __name__ == "__main__":
     DIR_PATH = str(BASE_DIR / "UTSP")
 
     # building an initial program
-    with open(str(BASE_DIR / "evolve/initial_program.txt"), 'w') as file:
-        file.write(format_query_code(DIR_PATH))
+    # with open(str(BASE_DIR / "evolve/initial_program.txt"), 'w') as file:
+    #     file.write(format_query_code(DIR_PATH))
+
+    if len(sys.argv) > 1:
+        initial_program_path = sys.argv[1]
+    else:
+        initial_program_path = str(BASE_DIR / "evolve/initial_program.txt")
+
+    print(f"Initial program path: `{initial_program_path}`.")
     
-    create_dir(str(BASE_DIR / "temp/solutions"))
+    create_dir("/workspace/dataspace/alpha_evolve/UTSP-AlphaEvolve/temp/solutions")
 
     # system initialization
     evolve = OpenEvolve(
-        initial_program_path=str(BASE_DIR / "evolve/initial_program.txt"),
+        initial_program_path=initial_program_path,
         evaluation_file=str(BASE_DIR / "evolve/evaluator.py"),
         config_path=str(BASE_DIR / "evolve/config.yaml"),
     )
 
     # latest checkpoint
-    checkpoint_path = latest_checkpoint(BASE_DIR / "evolve/openevolve_output/checkpoints")
+    checkpoint_path = latest_checkpoint(BASE_DIR / "best_programs/1000/openevolve_output/checkpoints")
     print(f"Using checkpoint: '{checkpoint_path}'.")
 
     # running evolution

@@ -6,6 +6,7 @@ import os
 import time
 import json
 import uuid
+import random
 import shutil
 import asyncio
 import logging
@@ -223,6 +224,16 @@ class OpenAILLM(LLMInterface):
     async def _call_api(self, params: Dict[str, Any]) -> str:
         """Make the actual API call"""
         # Use asyncio to run the blocking API call in a thread pool
+
+        # changing system prompt
+        if random.random() > 0.75:
+            params["messages"][0]["content"] = f'{params["messages"][0]["content"]}\n\nUPDATE: In this iteration you must focus on proposing NEW effective algorithms, methods and ideas (not just changing `config.json`) that could possibly improve the average path length. So, explore and feel free to rewrite the C++ program completely in your way (adding new methods and algorithms to `include/additional.hpp`). (config.json would also change obviously, depending on what hyperparameters would you use in your new experiment) Do not forget to write about your new algorithm in `changes_description.txt`.'
+
+        task_id = str(uuid.uuid4())
+
+        BASE_DIR = pathlib.Path(__file__).parents[3]
+        with open(str(BASE_DIR / f"evolve/logs/prompt-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}-{task_id}"), 'w', encoding="utf-8") as file:
+            file.write(f'SYSTEM:\n{params["messages"][0]["content"]}\n\n\nUSER:\n{params["messages"][1]["content"]}')  # logging content
         
         loop = asyncio.get_event_loop()
         response = await loop.run_in_executor(
@@ -232,6 +243,11 @@ class OpenAILLM(LLMInterface):
         logger = logging.getLogger(__name__)
         logger.debug(f"API parameters: {params}")
         logger.debug(f"API response: {response.choices[0].message.content}")
+
+        BASE_DIR = pathlib.Path(__file__).parents[3]
+        with open(str(BASE_DIR / f"evolve/logs/response-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}-{task_id}"), 'w', encoding="utf-8") as file:
+            file.write(response.choices[0].message.content)  # logging user content
+
         return response.choices[0].message.content
 
     async def _manual_wait_for_answer(self, params: Dict[str, Any], timeout: Optional[Union[int, float]]) -> str:

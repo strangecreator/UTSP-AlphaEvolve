@@ -103,7 +103,7 @@ EVOLUTION_HISTORY_TEMPLATE = """## Previous Attempts
 
 # Template for formatting a previous attempt
 PREVIOUS_ATTEMPT_TEMPLATE = """### Attempt {attempt_number}
-- Changes: {changes}
+- Changes:\n{changes}
 - Performance: {performance}
 - Outcome: {outcome}
 """

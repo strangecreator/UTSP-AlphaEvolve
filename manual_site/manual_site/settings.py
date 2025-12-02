@@ -120,7 +120,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'tasks' / 'static']
 
 # Queues
-MANUAL_QUEUE_DIR = Path("/Users/dark-creator/solomon/self/openevolve-usage/UTSP/UTSP-AlphaEvolve/temp/manual_queue")
+MANUAL_QUEUE_DIR = Path("/workspace/dataspace/alpha_evolve/UTSP-AlphaEvolve/temp/manual_queue")
 MANUAL_QUEUE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Default primary key field type

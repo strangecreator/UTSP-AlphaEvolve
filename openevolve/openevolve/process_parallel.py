@@ -260,6 +260,7 @@ def _run_iteration_worker(
             # optional extras you might want later:
             # "parent_metrics": parent.metrics,
             # "sampling_island": db_snapshot.get("sampling_island"),
+            "parent_code": parent.code,
         }
 
         # Evaluate the child program (Evaluator will write `{program_path}.meta.json`)
@@ -267,6 +268,32 @@ def _run_iteration_worker(
 
         # Get artifacts
         artifacts = _worker_evaluator.get_pending_artifacts(child_id)
+
+        # Optionally discard child if evaluation says text/changes_description update failed
+        if getattr(_worker_config.evaluator, "discard_if_text_changes_fail", False):
+            discard_flag = False
+
+            # Prefer artifact flag
+            if isinstance(artifacts, dict):
+                dp = artifacts.get("discard_program")
+
+                if isinstance(dp, bool):
+                    discard_flag = dp
+                elif isinstance(dp, (int, float)):
+                    discard_flag = dp != 0
+                elif isinstance(dp, str):
+                    discard_flag = dp.strip().lower() in {"1", "true", "yes", "y"}
+
+            if discard_flag:
+                logger.warning(
+                    f"Iteration {iteration}: evaluator requested program discard "
+                    f"(discard_program flag set). Child {child_id} will NOT be added to database."
+                )
+                # Do NOT create Program, do NOT add to DB – just report an error up.
+                return SerializableResult(
+                    error="Discarded program because changes_description.txt update failed",
+                    iteration=iteration,
+                )
 
         # Create child program
         child_program = Program(

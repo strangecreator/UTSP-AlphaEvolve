@@ -270,6 +270,9 @@ class PromptSampler:
             attempt_number = len(previous_programs) - i
             changes = program.get("metadata", {}).get("changes", "Unknown changes")
 
+            if self.config.include_only_text_changes:
+                changes = retrieve_text_changes(program.get("code", ""))
+
             # Format performance metrics using safe formatting
             performance_parts = []
             for name, value in program.get("metrics", {}).items():
@@ -425,7 +428,7 @@ class PromptSampler:
 
         # Combine into full history
         return history_template.format(
-            previous_attempts=previous_attempts_str.strip(),
+            previous_attempts=previous_attempts_str.strip(),  # TODO
             top_programs=combined_programs_str.strip(),
             inspirations_section=inspirations_section_str,
         )

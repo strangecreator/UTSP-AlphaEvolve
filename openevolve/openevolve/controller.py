@@ -274,6 +274,7 @@ class OpenEvolve:
                 "island_id": None,
                 "timestamp": time.time(),
                 "source": "initial_seed",
+                "parent_code": None,
             }
             initial_metrics = await self.evaluator.evaluate_program(
                 self.initial_program_code, initial_program_id, metadata=initial_metadata
